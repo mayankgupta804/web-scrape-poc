@@ -3,6 +3,7 @@ from link_finder import LinkFinder
 import os
 from domain import *
 from general import *
+from driver import *
 
 class Spider:
 
@@ -47,10 +48,15 @@ class Spider:
     def gather_links(page_url):
         html_string = ''
         try:
-            response = urlopen(page_url)
-            if 'text/html' in response.getheader('Content-Type'):
-                html_bytes = response.read()
-                html_string = html_bytes.decode("utf-8")
+            driver = get_driver()
+            driver.get(page_url)
+            html_string=driver.page_source
+            driver.close()
+            # print(html_string)
+            # response = urlopen(page_url)
+            # if 'text/html' in response.getheader('Content-Type'):
+            #     html_bytes = response.read()
+            #     html_string = html_bytes.decode("utf-8")
             finder = LinkFinder(Spider.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
