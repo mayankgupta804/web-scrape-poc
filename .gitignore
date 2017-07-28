@@ -7,3 +7,4 @@ env/pip-selfcheck.json
 env/selenium/
 spider.pyc
 chromedriver
+env/
