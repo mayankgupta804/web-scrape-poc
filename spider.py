@@ -3,6 +3,13 @@ from link_finder import LinkFinder
 import os
 from domain import *
 from general import *
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
+CHROME_DRIVER = "chromedriver"
 
 class Spider:
 
@@ -13,6 +20,10 @@ class Spider:
     crawled_file = ''
     queue = set()
     crawled = set()
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
+    CHROME_DRIVER = "chromedriver"
 
     def __init__(self, project_name, base_url, domain_name):
         Spider.project_name = project_name
@@ -47,10 +58,17 @@ class Spider:
     def gather_links(page_url):
         html_string = ''
         try:
-            response = urlopen(page_url)
-            if 'text/html' in response.getheader('Content-Type'):
-                html_bytes = response.read()
-                html_string = html_bytes.decode("utf-8")
+            print("creating driver")
+            driver = webdriver.Chrome(executable_path=os.path.abspath(CHROME_DRIVER), chrome_options=chrome_options)
+            driver.get(page_url)
+            print("getting page source")
+            html_string=driver.page_source
+            driver.close()
+            # print(html_string)
+            # response = urlopen(page_url)
+            # if 'text/html' in response.getheader('Content-Type'):
+            #     html_bytes = response.read()
+            #     html_string = html_bytes.decode("utf-8")
             finder = LinkFinder(Spider.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
