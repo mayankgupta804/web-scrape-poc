@@ -1,0 +1,9 @@
+.idea
+__pycache__
+env/.Python
+env/include/
+env/lib/
+env/pip-selfcheck.json
+env/selenium/
+spider.pyc
+chromedriver
