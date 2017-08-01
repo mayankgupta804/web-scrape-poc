@@ -3,9 +3,7 @@ from multiprocessing import JoinableQueue
 from spider import Spider
 from domain import *
 from general import *
-import sys
 
-sys.setrecursionlimit (1000)
 PROJECT_NAME = 'test'
 HOMEPAGE = 'http://www.testvagrant.com'
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
