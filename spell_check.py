@@ -31,5 +31,10 @@ class CheckWords(Thread):
         chkr = SpellChecker("en_US", filters=[EmailFilter, URLFilter])
         while True:
             dict = q.get(True, 60)
-            if not chkr.check(dict['word']):
-                append_to_file(self._file, dict['word'] + "," + str(dict['count']) + "," + dict['url'])
+            try:
+                if not chkr.check(dict['word']):
+                    append_to_file(self._file, dict['word'] + "," + str(dict['count']) + "," + dict['url'])
+            except UnicodeEncodeError:
+                pass
+            except:
+                pass
