@@ -67,6 +67,7 @@ class Spider:
     @staticmethod
     def add_links_to_queue(links):
         for url in links:
+            url = url.rstrip('/')
             if (url in Spider.queue) or (url in Spider.crawled):
                 continue
             if Spider.domain_name != get_domain_name(url):

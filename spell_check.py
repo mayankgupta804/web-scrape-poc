@@ -36,5 +36,5 @@ class CheckWords(Thread):
                     append_to_file(self._file, dict['word'] + "," + str(dict['count']) + "," + dict['url'])
             except UnicodeEncodeError:
                 pass
-            except:
-                pass
+            finally:
+                q.task_done()
