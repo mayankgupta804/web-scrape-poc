@@ -3,6 +3,7 @@ from link_finder import LinkFinder
 from domain import *
 from general import *
 from driver import *
+from spell_check import *
 
 class Spider:
 
@@ -11,6 +12,7 @@ class Spider:
     domain_name = ''
     queue_file = ''
     crawled_file = ''
+    spelling_file = ''
     queue = set()
     crawled = set()
 
@@ -20,8 +22,10 @@ class Spider:
         Spider.domain_name = domain_name
         Spider.queue_file = Spider.project_name + '/queue.txt'
         Spider.crawled_file = Spider.project_name + '/crawled.txt'
+        Spider.spelling_file = Spider.project_name + '/spelling.txt'
         self.boot()
         self.crawl_page('First spider', Spider.base_url)
+        CheckWords(Spider.spelling_file).start()
 
     # Creates directory and files for project on first run and starts the spider
     @staticmethod
@@ -30,6 +34,7 @@ class Spider:
         create_data_files(Spider.project_name, Spider.base_url)
         Spider.queue = file_to_set(Spider.queue_file)
         Spider.crawled = file_to_set(Spider.crawled_file)
+        Spider.spelling = file_to_set(Spider.spelling_file)
 
     # Updates user display, fills queue and updates files
     @staticmethod
@@ -49,6 +54,7 @@ class Spider:
             driver = get_driver()
             driver.get(page_url)
             html_string = driver.page_source
+            add_words_to_queue(driver.find_element_by_tag_name('body').text, page_url)
             driver.close()
             finder = LinkFinder(Spider.base_url, page_url)
             finder.feed(html_string)

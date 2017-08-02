@@ -11,6 +11,7 @@ NUMBER_OF_THREADS = int(STR_NUMBER_OF_THREADS)
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
+SPELLINGS_FILE = FOLDER_NAME + 'spellings.txt'
 queue = JoinableQueue()
 Spider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
 
