@@ -3,22 +3,21 @@ from multiprocessing import JoinableQueue
 from spider import Spider
 from domain import *
 from general import *
-import sys
 
-sys.setrecursionlimit (1000)
-PROJECT_NAME = 'test'
-HOMEPAGE = 'http://www.testvagrant.com'
+FOLDER_NAME = input("Enter the project name : ")
+HOMEPAGE = input("Enter URL of the homepage : ")
+STR_NUMBER_OF_THREADS = input("Enter number of threads for crawling : ")
+NUMBER_OF_THREADS = int(STR_NUMBER_OF_THREADS)
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
-QUEUE_FILE = PROJECT_NAME + '/queue.txt'
-CRAWLED_FILE = PROJECT_NAME + '/crawled.txt'
-NUMBER_OF_THREADS = 20
+QUEUE_FILE = FOLDER_NAME + '/queue.txt'
+CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
 queue = JoinableQueue()
-Spider(PROJECT_NAME, HOMEPAGE, DOMAIN_NAME)
+Spider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
 
 
 # Create worker threads (will die when main exits)
 def create_workers():
-    for _ in range(NUMBER_OF_THREADS):
+    for _ in range (NUMBER_OF_THREADS):
         t = threading.Thread(target=work)
         t.daemon = True
         t.start()

@@ -1,6 +1,5 @@
 from urllib.request import urlopen
 from link_finder import LinkFinder
-import os
 from domain import *
 from general import *
 from driver import *
@@ -46,17 +45,11 @@ class Spider:
     # Converts raw response data into readable information and checks for proper html formatting
     @staticmethod
     def gather_links(page_url):
-        html_string = ''
         try:
             driver = get_driver()
             driver.get(page_url)
-            html_string=driver.page_source
+            html_string = driver.page_source
             driver.close()
-            # print(html_string)
-            # response = urlopen(page_url)
-            # if 'text/html' in response.getheader('Content-Type'):
-            #     html_bytes = response.read()
-            #     html_string = html_bytes.decode("utf-8")
             finder = LinkFinder(Spider.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
