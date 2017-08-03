@@ -1,18 +1,24 @@
 import threading
 from multiprocessing import JoinableQueue
-from spider import Spider
-from domain import *
-from general import *
 
-FOLDER_NAME = input("Enter the project name : ")
-HOMEPAGE = input("Enter URL of the homepage : ")
-STR_NUMBER_OF_THREADS = input("Enter number of threads for crawling : ")
-NUMBER_OF_THREADS = int(STR_NUMBER_OF_THREADS)
+from headless_spider import HeadlessSpider
+from requesting_spider import RequestingSpider
+from spider import Spider
+from domain_extractor import *
+from utilities import *
+
+FOLDER_NAME = 'test'
+HOMEPAGE = 'http://www.testvagrant.com'
+NUMBER_OF_THREADS = 20
+MODE = input("Select mode (light|heavy) : ")
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
 queue = JoinableQueue()
-Spider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
+if MODE == 'heavy':
+    spider = HeadlessSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
+elif MODE == 'light':
+    spider = RequestingSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
 
 
 # Create worker threads (will die when main exits)
@@ -27,7 +33,7 @@ def create_workers():
 def work():
     while True:
         url = queue.get()
-        Spider.crawl_page(threading.current_thread().name, url)
+        spider.crawl_page(threading.current_thread().name, url)
         queue.task_done()
 
 
