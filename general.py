@@ -1,4 +1,5 @@
 import os
+import csv
 
 
 # Each website is a separate project (folder)
@@ -14,7 +15,7 @@ def create_data_files(project_name, base_url):
     crawled = os.path.join(project_name, "crawled.txt")
     spelling = os.path.join(project_name, "spelling.txt")
     if not os.path.isfile(queue):
-        write_file(queue, base_url)
+        write_file(queue, base_url + "," + str(0))
     if not os.path.isfile(crawled):
         write_file(crawled, '')
     if not os.path.isfile(spelling):
@@ -40,18 +41,18 @@ def delete_file_contents(path):
 
 # Read a file and convert each line to set items
 def file_to_set(file_name):
-    results = set()
     with open(file_name, 'rt') as f:
-        for line in f:
-            results.add(line.replace('\n', ''))
-    return results
+        results = [tuple(line) for line in csv.reader(f)]
+    return set(results)
 
 
 # Iterate through a set, each item will be a line in a file
-def set_to_file(links, file_name):
-    with open(file_name, "w") as f:
-        for l in sorted(links):
+def set_to_file(data, file_name):
+    print(data)
+    with open(file_name, "w") as out:
+        csv_out = csv.writer(out)
+        for row in sorted(data, key=lambda x: x[0]):
             try:
-                f.write(l + "\n")
+                csv_out.writerow(row)
             except UnicodeEncodeError:
                 pass

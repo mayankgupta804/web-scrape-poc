@@ -5,8 +5,8 @@ from general import *
 from driver import *
 from spell_check import *
 
-class Spider:
 
+class Spider:
     project_name = ''
     base_url = ''
     domain_name = ''
@@ -24,7 +24,7 @@ class Spider:
         Spider.crawled_file = Spider.project_name + '/crawled.txt'
         Spider.spelling_file = Spider.project_name + '/spelling.txt'
         self.boot()
-        self.crawl_page('First spider', Spider.base_url)
+        self.crawl_page('First spider', (Spider.base_url, 0))
         CheckWords(Spider.spelling_file).start()
 
     # Creates directory and files for project on first run and starts the spider
@@ -38,13 +38,13 @@ class Spider:
 
     # Updates user display, fills queue and updates files
     @staticmethod
-    def crawl_page(thread_name, page_url):
-        if page_url not in Spider.crawled:
-            print(thread_name + ' now crawling ' + page_url)
+    def crawl_page(thread_name, page_info):
+        if page_info not in Spider.crawled:
+            print(thread_name + ' now crawling ' + page_info[0])
             print('Queue ' + str(len(Spider.queue)) + ' | Crawled  ' + str(len(Spider.crawled)))
-            Spider.add_links_to_queue(Spider.gather_links(page_url))
-            Spider.queue.remove(page_url)
-            Spider.crawled.add(page_url)
+            Spider.add_links_to_queue(Spider.gather_links(page_info[0]), page_info[1])
+            Spider.queue = set(filter(lambda x: x[0] != page_info[0], Spider.queue))
+            Spider.crawled.add(page_info)
             Spider.update_files()
 
     # Converts raw response data into readable information and checks for proper html formatting
@@ -65,14 +65,14 @@ class Spider:
 
     # Saves queue data to project files
     @staticmethod
-    def add_links_to_queue(links):
+    def add_links_to_queue(links, depth):
         for url in links:
             url = url.rstrip('/')
             if (url in Spider.queue) or (url in Spider.crawled):
                 continue
             if Spider.domain_name != get_domain_name(url):
                 continue
-            Spider.queue.add(url)
+            Spider.queue.add((url, int(depth) + 1))
 
     @staticmethod
     def update_files():
