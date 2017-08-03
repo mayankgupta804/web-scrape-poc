@@ -13,13 +13,15 @@ class Spider:
     queue_file = ''
     crawled_file = ''
     spelling_file = ''
+    max_depth = int()
     queue = set()
     crawled = set()
 
-    def __init__(self, project_name, base_url, domain_name):
+    def __init__(self, project_name, base_url, domain_name, max_depth):
         Spider.project_name = project_name
         Spider.base_url = base_url
         Spider.domain_name = domain_name
+        Spider.max_depth = max_depth
         Spider.queue_file = Spider.project_name + '/queue.txt'
         Spider.crawled_file = Spider.project_name + '/crawled.txt'
         Spider.spelling_file = Spider.project_name + '/spelling.txt'
@@ -42,7 +44,8 @@ class Spider:
         if page_info not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
             print('Queue ' + str(len(Spider.queue)) + ' | Crawled  ' + str(len(Spider.crawled)))
-            Spider.add_links_to_queue(Spider.gather_links(page_info[0]), page_info[1])
+            if int(page_info[1]) < Spider.max_depth:
+                Spider.add_links_to_queue(Spider.gather_links(page_info[0]), page_info[1])
             Spider.queue = set(filter(lambda x: x[0] != page_info[0], Spider.queue))
             Spider.crawled.add(page_info)
             Spider.update_files()

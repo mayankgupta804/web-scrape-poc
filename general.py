@@ -48,7 +48,6 @@ def file_to_set(file_name):
 
 # Iterate through a set, each item will be a line in a file
 def set_to_file(data, file_name):
-    print(data)
     with open(file_name, "w") as out:
         csv_out = csv.writer(out)
         for row in sorted(data, key=lambda x: x[0]):

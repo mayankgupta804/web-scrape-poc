@@ -12,13 +12,14 @@ DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
 SPELLINGS_FILE = FOLDER_NAME + 'spellings.txt'
+MAX_DEPTH = 5
 queue = JoinableQueue()
-Spider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
+Spider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
 
 
 # Create worker threads (will die when main exits)
 def create_workers():
-    for _ in range (NUMBER_OF_THREADS):
+    for _ in range(NUMBER_OF_THREADS):
         t = threading.Thread(target=work)
         t.daemon = True
         t.start()
