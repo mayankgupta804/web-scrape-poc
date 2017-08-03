@@ -4,10 +4,9 @@ from spider import Spider
 from domain import *
 from general import *
 
-FOLDER_NAME = input("Enter the project name : ")
-HOMEPAGE = input("Enter URL of the homepage : ")
-STR_NUMBER_OF_THREADS = input("Enter number of threads for crawling : ")
-NUMBER_OF_THREADS = int(STR_NUMBER_OF_THREADS)
+FOLDER_NAME = 'test'
+HOMEPAGE = 'http://www.testvagrant.com'
+NUMBER_OF_THREADS = 20
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
