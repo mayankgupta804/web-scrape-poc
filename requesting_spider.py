@@ -5,6 +5,7 @@ from spider import Spider
 
 
 class RequestingSpider(Spider):
+
     def __init__(self, project_name, base_url, domain_name):
         Spider.__init__(self, project_name, base_url, domain_name)
         Spider.boot()

@@ -1,24 +1,24 @@
 import threading
 from multiprocessing import JoinableQueue
-
 from headless_spider import HeadlessSpider
 from requesting_spider import RequestingSpider
-from spider import Spider
 from domain_extractor import *
 from utilities import *
 
 FOLDER_NAME = 'test'
 HOMEPAGE = 'http://www.testvagrant.com'
 NUMBER_OF_THREADS = 20
-MODE = input("Select mode (light|heavy) : ")
+MODE = input("Select traversal mode (light|normal) : ")
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
 queue = JoinableQueue()
-if MODE == 'heavy':
+
+if MODE == 'normal':
     spider = HeadlessSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
 elif MODE == 'light':
     spider = RequestingSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME)
+
 
 
 # Create worker threads (will die when main exits)

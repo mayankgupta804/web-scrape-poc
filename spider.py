@@ -33,7 +33,7 @@ class Spider:
     def crawl_page(cls,thread_name, page_url):
         if page_url not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_url)
-            print('Queue ' + str(len(cls.queue)) + ' | Crawled  ' + str(len(cls.crawled)))
+            print('Queue : ' + str(len(cls.queue)) + ' | Crawled : ' + str(len(cls.crawled)))
             cls.add_links_to_queue(cls.gather_links(page_url))
             cls.queue.remove(page_url)
             cls.crawled.add(page_url)
