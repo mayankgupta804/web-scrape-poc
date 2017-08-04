@@ -43,7 +43,7 @@ class Spider:
     def crawl_page(thread_name, page_info):
         if page_info not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
-            print('Queue ' + str(len(Spider.queue)) + ' | Crawled  ' + str(len(Spider.crawled)))
+            print('Queue ' + str(len(Spider.queue)) + ' | Crawled  ' + str(len(Spider.crawled)) + ' | Depth ' + str(page_info[1]))
             if int(page_info[1]) < Spider.max_depth:
                 Spider.add_links_to_queue(Spider.gather_links(page_info[0]), page_info[1])
             Spider.queue = set(filter(lambda x: x[0] != page_info[0], Spider.queue))
@@ -54,10 +54,10 @@ class Spider:
     @staticmethod
     def gather_links(page_url):
         try:
-            driver = get_driver()
-            driver.get(page_url)
-            html_string = driver.page_source
-            add_words_to_queue(driver.find_element_by_tag_name('body').text, page_url)
+            driver = WebDriverWrapper(page_url)
+            driver.save_screenshot()
+            html_string = driver.get_page_source()
+            driver.add_words_to_queue()
             driver.close()
             finder = LinkFinder(Spider.base_url, page_url)
             finder.feed(html_string)
