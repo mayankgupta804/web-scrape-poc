@@ -43,7 +43,9 @@ def delete_file_contents(path):
 def file_to_set(file_name):
     with open(file_name, 'rt') as f:
         results = [tuple(line) for line in csv.reader(f)]
-    return set(results)
+    parsed = ((row[0],
+           int(row[1]))for row in results)
+    return set(parsed)
 
 
 # Iterate through a set, each item will be a line in a file
