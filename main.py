@@ -10,20 +10,21 @@ from utilities import *
 
 FOLDER_NAME = 'test1'
 HOMEPAGE = 'https://www.google.com'
-NUMBER_OF_THREADS = 20
+NUMBER_OF_THREADS = 10
 MODE = input("Select traversal mode (light|normal) : ")
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
 SPELLINGS_FILE = FOLDER_NAME + 'spellings.txt'
+FAILED_URLs = FOLDER_NAME + '/failedUrls.txt'
 MAX_DEPTH = 5
 queue = JoinableQueue()
 sys.setrecursionlimit(10000)
 
 if MODE == 'normal':
-    spider = HeadlessSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME,MAX_DEPTH)
+    spider = HeadlessSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
 elif MODE == 'light':
-    spider = RequestingSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME,MAX_DEPTH)
+    spider = RequestingSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
 
 
 # Create worker threads (will die when main exits)

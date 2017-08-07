@@ -34,8 +34,8 @@ class RequestingSpider(Spider):
         return finder.page_links()
 
     @classmethod
-    def add_links_to_queue(cls, links):
-        super().add_links_to_queue(links)
+    def add_links_to_queue(cls, links,depth):
+        super().add_links_to_queue(links,depth)
 
     @classmethod
     def update_files(cls):
