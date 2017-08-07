@@ -11,15 +11,21 @@ def create_project_dir(directory):
 
 # Create queue and crawled files (if not created)
 def create_data_files(project_name, base_url):
-    queue = os.path.join(project_name, "queue.txt")
-    crawled = os.path.join(project_name, "crawled.txt")
-    spelling = os.path.join(project_name, "spelling.txt")
+    queue = os.path.join(project_name, 'queue.txt')
+    crawled = os.path.join(project_name, 'crawled.txt')
+    spelling = os.path.join(project_name, 'spelling.txt')
+    failedURLs = os.path.join(project_name, 'failedUrls.txt')
+    brokenLinks = os.path.join(project_name, 'brokenLinks.txt')
     if not os.path.isfile(queue):
         write_file(queue, base_url + "," + str(0))
     if not os.path.isfile(crawled):
         write_file(crawled, '')
     if not os.path.isfile(spelling):
         write_file(spelling, '')
+    if not os.path.isfile(failedURLs):
+        write_file(failedURLs, '')
+    if not os.path.isfile(brokenLinks):
+        write_file(brokenLinks, '')
 
 
 # Create a new file
@@ -43,7 +49,9 @@ def delete_file_contents(path):
 def file_to_set(file_name):
     with open(file_name, 'rt') as f:
         results = [tuple(line) for line in csv.reader(f)]
-    return set(results)
+    parsed = ((row[0],
+           int(row[1]))for row in results)
+    return set(parsed)
 
 
 # Iterate through a set, each item will be a line in a file

@@ -1,19 +1,30 @@
 import threading
 from multiprocessing import JoinableQueue
-from spider import Spider
-from domain import *
-from general import *
 
-FOLDER_NAME = 'test'
-HOMEPAGE = 'http://www.testvagrant.com'
-NUMBER_OF_THREADS = 20
+import sys
+
+from headless_spider import HeadlessSpider
+from requesting_spider import RequestingSpider
+from domain_extractor import *
+from utilities import *
+
+FOLDER_NAME = 'test2'
+HOMEPAGE = 'https://mayankgupta804.github.io/'
+NUMBER_OF_THREADS = 10
+MODE = input("Select traversal mode (light|normal) : ")
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = FOLDER_NAME + '/queue.txt'
 CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
 SPELLINGS_FILE = FOLDER_NAME + 'spellings.txt'
+FAILED_URLs = FOLDER_NAME + '/failedUrls.txt'
 MAX_DEPTH = 5
 queue = JoinableQueue()
-Spider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
+sys.setrecursionlimit(10000)
+
+if MODE == 'normal':
+    spider = HeadlessSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
+elif MODE == 'light':
+    spider = RequestingSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
 
 
 # Create worker threads (will die when main exits)
@@ -28,7 +39,7 @@ def create_workers():
 def work():
     while True:
         url = queue.get()
-        Spider.crawl_page(threading.current_thread().name, url)
+        spider.crawl_page(threading.current_thread().name, url)
         queue.task_done()
 
 

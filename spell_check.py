@@ -3,7 +3,7 @@ from enchant.tokenize import get_tokenizer, URLFilter, EmailFilter
 from multiprocessing import JoinableQueue
 from threading import Thread
 
-from general import append_to_file
+from utilities import append_to_file
 
 q = JoinableQueue(10000)
 

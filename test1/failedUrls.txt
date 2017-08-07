@@ -1,0 +1,2 @@
+404,Not Found,https://mayankgupta804.github.io/about
+404,Not Found,https://mayankgupta804.github.io/cv
