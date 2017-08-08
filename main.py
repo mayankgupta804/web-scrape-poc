@@ -9,7 +9,10 @@ from requesting_spider import RequestingSpider
 from domain_extractor import *
 from utilities import *
 
-p = Properties()
+if len(sys.argv) > 1:
+    p = Properties(sys.argv[1])
+else:
+    p = Properties()
 FOLDER_NAME = p.folder
 HOMEPAGE = p.home_page
 NUMBER_OF_THREADS = p.threads
