@@ -4,20 +4,22 @@ from multiprocessing import JoinableQueue
 import sys
 
 from headless_spider import HeadlessSpider
+from properties import Properties
 from requesting_spider import RequestingSpider
 from domain_extractor import *
 from utilities import *
 
-FOLDER_NAME = 'test1'
-HOMEPAGE = 'https://www.google.com'
-NUMBER_OF_THREADS = 10
-MODE = input("Select traversal mode (light|normal) : ")
+p = Properties()
+FOLDER_NAME = p.folder
+HOMEPAGE = p.home_page
+NUMBER_OF_THREADS = p.threads
+MODE = p.mode
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
-QUEUE_FILE = FOLDER_NAME + '/queue.txt'
-CRAWLED_FILE = FOLDER_NAME + '/crawled.txt'
-SPELLINGS_FILE = FOLDER_NAME + 'spellings.txt'
-FAILED_URLs = FOLDER_NAME + '/failedUrls.txt'
-MAX_DEPTH = 5
+QUEUE_FILE = p.queue_file
+CRAWLED_FILE = p.crawled_file
+SPELLINGS_FILE = p.spelling_file
+FAILED_URLs = p.failed_file
+MAX_DEPTH = p.depth
 queue = JoinableQueue()
 sys.setrecursionlimit(10000)
 
