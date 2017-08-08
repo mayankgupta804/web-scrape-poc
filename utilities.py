@@ -1,8 +1,11 @@
 import os
 import csv
 
-
 # Each website is a separate project (folder)
+# from main import config
+from properties import Properties
+
+
 def create_project_dir(directory):
     if not os.path.exists(directory):
         print('Creating directory ' + directory)
@@ -10,22 +13,24 @@ def create_project_dir(directory):
 
 
 # Create queue and crawled files (if not created)
-def create_data_files(project_name, base_url):
-    queue = os.path.join(project_name, "queue.txt")
-    crawled = os.path.join(project_name, "crawled.txt")
-    spelling = os.path.join(project_name, "spelling.txt")
-    failedURLs = os.path.join(project_name, 'failedUrls.txt')
-    brokenLinks = os.path.join(project_name, 'brokenLinks.txt')
+def create_data_files(config):
+    p = Properties(config)
+    create_project_dir(p.folder)
+    queue = p.queue_file
+    crawled = p.crawled_file
+    spelling = p.spelling_file
+    failed_urls = p.failed_file
+    broken_links = p.broken_file
     if not os.path.isfile(queue):
-        write_file(queue, base_url + "," + str(0))
+        write_file(queue, p.home_page + "," + str(0))
     if not os.path.isfile(crawled):
         write_file(crawled, '')
     if not os.path.isfile(spelling):
         write_file(spelling, '')
-    if not os.path.isfile(failedURLs):
-        write_file(failedURLs, '')
-    if not os.path.isfile(brokenLinks):
-        write_file(brokenLinks, '')
+    if not os.path.isfile(failed_urls):
+        write_file(failed_urls, '')
+    if not os.path.isfile(broken_links):
+        write_file(broken_links, '')
 
 
 # Create a new file
@@ -50,7 +55,7 @@ def file_to_set(file_name):
     with open(file_name, 'rt') as f:
         results = [tuple(line) for line in csv.reader(f)]
     parsed = ((row[0],
-           int(row[1]))for row in results)
+               int(row[1])) for row in results)
     return set(parsed)
 
 

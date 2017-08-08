@@ -26,25 +26,24 @@ class Spider:
         500: 'Internal Server Error'
     }
 
-    def __init__(self, project_name, base_url, domain_name, max_depth):
-        Spider.project_name = project_name
+    def __init__(self,config, base_url, domain_name):
+        p = Properties(config)
+        self.config = config
         Spider.base_url = base_url
         Spider.domain_name = domain_name
-        Spider.max_depth = max_depth
-        Spider.queue_file = Spider.project_name + '/queue.txt'
-        Spider.crawled_file = Spider.project_name + '/crawled.txt'
-        Spider.spelling_file = Spider.project_name + '/spelling.txt'
-        Spider.failedUrls_file = Spider.project_name + '/failedUrls.txt'
+        Spider.max_depth = p.depth
+        Spider.queue_file = p.queue_file
+        Spider.crawled_file = p.crawled_file
+        Spider.spelling_file = p.spelling_file
+        Spider.failedUrls_file = p.failed_file
 
     # Creates directory and files for project on first run and starts the spider
     @classmethod
-    def boot(cls):
-        create_project_dir(cls.project_name)
-        create_data_files(cls.project_name, cls.base_url)
+    def boot(cls,config):
+        create_data_files(config)
         cls.queue = file_to_set(cls.queue_file)
         cls.crawled = file_to_set(cls.crawled_file)
         cls.spelling = file_to_set(cls.spelling_file)
-        cls.failedUrls = file_to_set(cls.failedUrls_file)
 
     # Updates user display, fills queue and updates files
     @classmethod

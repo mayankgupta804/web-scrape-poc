@@ -1,18 +1,19 @@
+import sys
 import threading
 from multiprocessing import JoinableQueue
 
-import sys
-
-from headless_spider import HeadlessSpider
-from properties import Properties
-from requesting_spider import RequestingSpider
 from domain_extractor import *
+from headless_spider import HeadlessSpider
+from requesting_spider import RequestingSpider
 from utilities import *
 
+
 if len(sys.argv) > 1:
-    p = Properties(sys.argv[1])
+    CONFIG = sys.argv[1]
 else:
-    p = Properties()
+    CONFIG = "config.properties"
+p = Properties(CONFIG)
+
 FOLDER_NAME = p.folder
 HOMEPAGE = p.home_page
 NUMBER_OF_THREADS = p.threads
@@ -27,9 +28,9 @@ queue = JoinableQueue()
 sys.setrecursionlimit(10000)
 
 if MODE == 'normal':
-    spider = HeadlessSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
+    spider = HeadlessSpider(CONFIG, HOMEPAGE, DOMAIN_NAME)
 elif MODE == 'light':
-    spider = RequestingSpider(FOLDER_NAME, HOMEPAGE, DOMAIN_NAME, MAX_DEPTH)
+    spider = RequestingSpider(CONFIG, HOMEPAGE, DOMAIN_NAME)
 
 
 # Create worker threads (will die when main exits)
