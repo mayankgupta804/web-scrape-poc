@@ -1,6 +1,8 @@
-from configparser import ConfigParser
+from configparser import ConfigParser, NoOptionError
 
 import os
+
+import sys
 
 
 class Properties:
@@ -18,7 +20,11 @@ class Properties:
 
     @property
     def home_page(self):
-        return self._p.get("PROPERTIES", "homepage")
+        try:
+            return self._p.get("PROPERTIES", "homepage")
+        except NoOptionError as e:
+            print(e)
+            sys.exit(1)
 
     @property
     def threads(self):
