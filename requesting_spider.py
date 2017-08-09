@@ -18,7 +18,6 @@ class RequestingSpider(Spider):
 
     @classmethod
     def gather_links(cls, page_url):
-        print("request")
         html_string = ''
         try:
             response = urlopen(page_url)
@@ -28,7 +27,6 @@ class RequestingSpider(Spider):
             finder = LinkFinder(cls.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
-            print(str(e))
             return set()
         return finder.page_links()
 

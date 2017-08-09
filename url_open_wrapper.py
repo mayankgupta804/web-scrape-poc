@@ -1,8 +1,6 @@
-from urllib.request import urlopen
 from spell_check import *
-import nltk
 import requests
-
+import nltk
 
 class URLOpenWrapper:
     def __init__(self,page_url):

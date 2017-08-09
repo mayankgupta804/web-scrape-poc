@@ -19,18 +19,18 @@ def create_data_files(config):
     queue = p.queue_file
     crawled = p.crawled_file
     spelling = p.spelling_file
-    failed_urls = p.failed_file
-    broken_links = p.broken_file
+    broken_images = p.broken_images_file
+    broken_links = p.broken_links_file
     if not os.path.isfile(queue):
         write_file(queue, p.home_page + "," + str(0))
     if not os.path.isfile(crawled):
         write_file(crawled, '')
     if not os.path.isfile(spelling):
         write_file(spelling, '')
-    if not os.path.isfile(failed_urls):
-        write_file(failed_urls, '')
     if not os.path.isfile(broken_links):
         write_file(broken_links, '')
+    if not os.path.isfile(broken_images):
+        write_file(broken_images, '')
 
 
 # Create a new file
