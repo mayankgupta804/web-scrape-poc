@@ -29,7 +29,6 @@ class CheckWords(Thread):
         self._file = file_name
 
     def run(self):
-            # chkr = SpellChecker("en_US", filters=[EmailFilter, URLFilter])
         chkr = enchant.DictWithPWL("en_US", "words.txt")
         while True:
             dict = q.get(True, 60)

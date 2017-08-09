@@ -26,7 +26,7 @@ class Spider:
         500: 'Internal Server Error'
     }
 
-    def __init__(self,config, base_url, domain_name):
+    def __init__(self, config, base_url, domain_name):
         p = Properties(config)
         self.config = config
         Spider.base_url = base_url
@@ -39,7 +39,7 @@ class Spider:
 
     # Creates directory and files for project on first run and starts the spider
     @classmethod
-    def boot(cls,config):
+    def boot(cls, config):
         create_data_files(config)
         cls.queue = file_to_set(cls.queue_file)
         cls.crawled = file_to_set(cls.crawled_file)
@@ -52,7 +52,7 @@ class Spider:
             print(thread_name + ' now crawling ' + page_info[0])
             print('Queue ' + str(len(Spider.queue)) + ' | Crawled  ' + str(len(Spider.crawled)) + ' | Depth ' + str(
                 page_info[1]) + ' | Failed URLs : ' + str(len(Spider.failedUrls)))
-            if int(page_info[1]) < cls.max_depth:
+            if int(page_info[1]) <= cls.max_depth:
                 links = cls.gather_links(page_info[0])
                 cls.add_links_to_queue(links, page_info[1])
             Spider.queue.remove(page_info)
@@ -76,7 +76,8 @@ class Spider:
                 continue
             if cls.domain_name != get_domain_name(url):
                 continue
-            cls.queue.add((url, int(depth) + 1))
+            if depth < cls.max_depth:
+                cls.queue.add((url, int(depth) + 1))
 
     @classmethod
     def update_files(cls):
