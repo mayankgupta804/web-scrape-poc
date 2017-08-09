@@ -44,8 +44,8 @@ class Properties:
         return file
 
     @property
-    def failed_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "failed", fallback="failed.txt"))
+    def broken_links_file(self):
+        file = os.path.join(self.folder, self._p.get("FILES", "broken_links", fallback="broken_links.txt"))
         return file
 
     @property
@@ -54,6 +54,6 @@ class Properties:
         return file
 
     @property
-    def broken_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "broken_url", fallback="broken.txt"))
+    def broken_images_file(self):
+        file = os.path.join(self.folder, self._p.get("FILES", "broken_images", fallback="broken_images.txt"))
         return file

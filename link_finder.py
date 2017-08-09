@@ -17,6 +17,11 @@ class LinkFinder(HTMLParser):
                 if attribute == 'href':
                     url = parse.urljoin(self.base_url, value)
                     self.links.add(url)
+        elif tag == 'img':
+            for (attribute, value) in attrs:
+                if attribute == 'src':
+                    url = parse.urljoin(self.base_url, value)
+                    self.links.add(url)
 
     def page_links(self):
         return self.links

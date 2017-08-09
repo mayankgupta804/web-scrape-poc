@@ -22,8 +22,9 @@ DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = p.queue_file
 CRAWLED_FILE = p.crawled_file
 SPELLINGS_FILE = p.spelling_file
-FAILED_URLs = p.failed_file
+BROKEN_LINKS = p.broken_links_file
 MAX_DEPTH = p.depth
+BROKEN_IMAGES = p.broken_images_file
 queue = JoinableQueue()
 sys.setrecursionlimit(10000)
 
