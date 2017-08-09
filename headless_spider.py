@@ -7,9 +7,12 @@ from utilities import append_to_file
 
 
 class HeadlessSpider(Spider):
+    config = ""
+
     def __init__(self,config, base_url, domain_name):
         Spider.__init__(self,config, base_url, domain_name)
         Spider.boot(config)
+        self.config = config
         self.crawl_page('First spider', (Spider.base_url, 0))
         CheckWords(Spider.spelling_file).start()
 
