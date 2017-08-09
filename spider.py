@@ -56,19 +56,27 @@ class Spider:
             print(thread_name + ' now crawling ' + page_info[0])
             print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) + ' | Depth : ' + str(
                 page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)) + ' | Broken Images : ' +str(len(Spider.broken_images)))
-            if int(page_info[1]) < cls.max_depth:
+            if int(page_info[1]) <= cls.max_depth:
                 links = cls.gather_links(page_info[0])
                 cls.add_links_to_queue(links, page_info[1])
             Spider.queue.remove(page_info)
             cls.crawled.add(page_info)
             status = URLOpenWrapper(page_info[0]).get_status_code()
             image = re.match("(https|http?:)?\/\/?[^'\"<>]+?\.(jpg|jpeg|gif|png)", page_info[0])
-            if image:
-                if int(status) != 200:
-                    cls.broken_images.add((str(status), Spider.request[status], page_info[0]))
-            if status in Spider.request and not image:
-                cls.broken_links.add((str(status), Spider.request[status], page_info[0]))
+            cls.check_image_status(image, page_info, status)
+            cls.check_link_status(image, page_info, status)
             cls.update_files()
+
+    @classmethod
+    def check_link_status(cls, image, page_info, status):
+        if status in Spider.request and not image:
+            cls.broken_links.add((str(status), Spider.request[status], page_info[0]))
+
+    @classmethod
+    def check_image_status(cls, image, page_info, status):
+        if image:
+            if int(status) != 200:
+                cls.broken_images.add((str(status), Spider.request[status], page_info[0]))
 
     # Converts raw response data into readable information and checks for proper html formatting
     @abstractmethod
