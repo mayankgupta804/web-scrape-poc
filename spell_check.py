@@ -1,7 +1,8 @@
-from enchant.checker import SpellChecker
-from enchant.tokenize import get_tokenizer, URLFilter, EmailFilter
 from multiprocessing import JoinableQueue
 from threading import Thread
+
+import enchant
+from enchant.tokenize import get_tokenizer
 
 from utilities import append_to_file
 
@@ -28,7 +29,8 @@ class CheckWords(Thread):
         self._file = file_name
 
     def run(self):
-        chkr = SpellChecker("en_US", filters=[EmailFilter, URLFilter])
+            # chkr = SpellChecker("en_US", filters=[EmailFilter, URLFilter])
+        chkr = enchant.DictWithPWL("en_US", "words.txt")
         while True:
             dict = q.get(True, 60)
             try:

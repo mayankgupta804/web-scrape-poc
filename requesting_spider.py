@@ -6,10 +6,9 @@ from spider import Spider
 
 
 class RequestingSpider(Spider):
-
-    def __init__(self, project_name, base_url, domain_name,max_depth):
-        Spider.__init__(self, project_name, base_url, domain_name,max_depth)
-        Spider.boot()
+    def __init__(self,config, base_url, domain_name):
+        Spider.__init__(self,config, base_url, domain_name)
+        Spider.boot(config)
         self.crawl_page('First spider', Spider.base_url)
         CheckWords(Spider.spelling_file).start()
 
@@ -32,8 +31,8 @@ class RequestingSpider(Spider):
         return finder.page_links()
 
     @classmethod
-    def add_links_to_queue(cls, links,depth):
-        super().add_links_to_queue(links,depth)
+    def add_links_to_queue(cls, links, depth):
+        super().add_links_to_queue(links, depth)
 
     @classmethod
     def update_files(cls):
