@@ -1,3 +1,4 @@
+import re
 from abc import abstractmethod
 from domain_extractor import *
 from url_open_wrapper import URLOpenWrapper
@@ -54,14 +55,18 @@ class Spider:
         if page_info not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
             print('Queue ' + str(len(Spider.queue)) + ' | Crawled  ' + str(len(Spider.crawled)) + ' | Depth ' + str(
-                page_info[1]) + ' | Failed URLs : ' + str(len(Spider.broken_links)))
+                page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)) + ' | Broken Images : ' +str(len(Spider.broken_images)))
             if int(page_info[1]) < cls.max_depth:
                 links = cls.gather_links(page_info[0])
                 cls.add_links_to_queue(links, page_info[1])
             Spider.queue.remove(page_info)
             cls.crawled.add(page_info)
             status = URLOpenWrapper(page_info[0]).get_status_code()
-            if status in Spider.request:
+            image = re.match("(https|http?:)?\/\/?[^'\"<>]+?\.(jpg|jpeg|gif|png)", page_info[0])
+            if image:
+                if int(status) != 200:
+                    cls.broken_images.add((str(status), Spider.request[status], page_info[0]))
+            if status in Spider.request and not image:
                 cls.broken_links.add((str(status), Spider.request[status], page_info[0]))
             cls.update_files()
 
