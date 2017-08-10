@@ -1,4 +1,4 @@
-from driver_init import WebDriverWrapper
+from driver_wrapper import WebDriverWrapper
 from link_finder import LinkFinder
 from properties import Properties
 from spell_check import CheckWords
