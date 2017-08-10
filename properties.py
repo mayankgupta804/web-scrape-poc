@@ -36,7 +36,7 @@ class Properties:
 
     @property
     def crawled_file(self):
-        file = os.path.join(self.folder,self._p.get("FILES", "crawled", fallback="crawled.txt"))
+        file = os.path.join(self.folder, self._p.get("FILES", "crawled", fallback="crawled.txt"))
         return file
 
     @property

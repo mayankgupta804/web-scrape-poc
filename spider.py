@@ -52,7 +52,7 @@ class Spider:
     # Updates user display, fills queue and updates files
     @classmethod
     def crawl_page(cls, thread_name, page_info):
-        if page_info not in Spider.crawled:
+        if page_info[0] not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
             print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) + ' | Depth : ' + str(
                 page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)) + ' | Broken Images : ' +str(len(Spider.broken_images)))

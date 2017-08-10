@@ -9,8 +9,8 @@ from utilities import append_to_file
 class HeadlessSpider(Spider):
     config = ""
 
-    def __init__(self,config, base_url, domain_name):
-        Spider.__init__(self,config, base_url, domain_name)
+    def __init__(self, config, base_url, domain_name):
+        Spider.__init__(self, config, base_url, domain_name)
         Spider.boot(config)
         self.config = config
         self.crawl_page('First spider', (Spider.base_url, 0))
@@ -23,14 +23,15 @@ class HeadlessSpider(Spider):
     @classmethod
     def gather_links(cls, page_url):
         try:
-            driver = WebDriverWrapper(page_url)
-            html_string = driver.get_page_source()
-            driver.add_words_to_queue()
-            driver.close()
+            with WebDriverWrapper(page_url) as driver:
+                html_string = driver.get_page_source()
+                driver.add_words_to_queue()
+
             finder = LinkFinder(cls.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
-            append_to_file(Properties(cls.config).error_file, str(e))
+            append_to_file(Properties(cls.config).error_file, page_url + "\n" + str(e))
+            print(str(e))
             return set()
         return finder.page_links()
 

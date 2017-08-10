@@ -31,7 +31,7 @@ class CheckWords(Thread):
     def run(self):
         chkr = enchant.DictWithPWL("en_US", "words.txt")
         while True:
-            dict = q.get(True, 60)
+            dict = q.get()
             try:
                 if not chkr.check(dict['word']):
                     append_to_file(self._file, dict['word'] + "," + str(dict['count']) + "," + dict['url'])

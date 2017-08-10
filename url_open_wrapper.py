@@ -2,8 +2,9 @@ from spell_check import *
 import requests
 import nltk
 
+
 class URLOpenWrapper:
-    def __init__(self,page_url):
+    def __init__(self, page_url):
         self._page_url = page_url
         self._response = requests.get(page_url)
 
@@ -19,5 +20,3 @@ class URLOpenWrapper:
 
     def get_status_code(self):
         return self._response.status_code
-
-
