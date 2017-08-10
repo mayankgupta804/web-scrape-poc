@@ -67,6 +67,7 @@ eur
 sunday
 pdf
 usr
+microservice
 dc
 mon
 robert

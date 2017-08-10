@@ -8,11 +8,13 @@ from utilities import append_to_file
 
 class HeadlessSpider(Spider):
     config = ""
+    device = ""
 
     def __init__(self, config, base_url, domain_name):
         Spider.__init__(self, config, base_url, domain_name)
         Spider.boot(config)
-        self.config = config
+        HeadlessSpider.config = config
+        HeadlessSpider.device = Properties(config).device
         self.crawl_page('First spider', (Spider.base_url, 0))
         CheckWords(Spider.spelling_file).start()
 
@@ -23,7 +25,7 @@ class HeadlessSpider(Spider):
     @classmethod
     def gather_links(cls, page_url):
         try:
-            with WebDriverWrapper(page_url) as driver:
+            with WebDriverWrapper(page_url, cls.device) as driver:
                 html_string = driver.get_page_source()
                 driver.add_words_to_queue()
 

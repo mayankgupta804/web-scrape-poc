@@ -1,13 +1,18 @@
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
+from devices import device_mappings
 from spell_check import *
 
 
 class WebDriverWrapper:
-    def __init__(self, page_url):
+    def __init__(self, page_url, device):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        if device is not None:
+            mobile_emulation = device_mappings[device.lower()]
+            chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
         chrome_options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
         self._page_url = page_url
         self._driver = webdriver.Chrome(executable_path=os.path.abspath("chromedriver"), chrome_options=chrome_options)

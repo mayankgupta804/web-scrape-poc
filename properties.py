@@ -35,6 +35,10 @@ class Properties:
         return self._p.get("PROPERTIES", "mode", fallback="normal")
 
     @property
+    def device(self):
+        return self._p.get("PROPERTIES", "device")
+
+    @property
     def crawled_file(self):
         file = os.path.join(self.folder, self._p.get("FILES", "crawled", fallback="crawled.txt"))
         return file
