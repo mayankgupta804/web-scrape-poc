@@ -20,7 +20,6 @@ class Spider:
     broken_links = set()
     broken_images = set()
     request = {
-        200: 'OK',
         301: 'Moved Permanently',
         302: 'Redirect',
         400: 'Bad Request',
