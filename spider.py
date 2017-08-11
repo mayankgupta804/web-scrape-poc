@@ -60,12 +60,7 @@ class Spider:
             cls.add_links_per_depth(page_info)
             Spider.queue.remove(page_info)
             cls.crawled.add(page_info)
-            #returns http status codes
-            status = URLOpenWrapper(page_info[0]).get_status_code()
-            #returns true if a link points to an image, else false
-            image = re.match("(https|http?:)?\/\/?[^'\"<>]+?\.(jpg|jpeg|gif|png)", page_info[0])
-            cls.check_image_status(image, page_info, status)
-            cls.check_link_status(image, page_info, status)
+            cls.check_link_status(page_info)
             cls.update_files()
 
     @classmethod
@@ -75,28 +70,16 @@ class Spider:
             cls.add_links_to_queue(links, page_info[1])
 
     @classmethod
-    def check_link_status(cls, image, page_info, status):
-        if status in Spider.request and not image:
+    def check_link_status(cls, page_info):
+        status = URLOpenWrapper(page_info[0]).get_status_code()
+        if status in Spider.request:
             cls.broken_links.add((str(status), Spider.request[status], page_info[0]))
-
-    @classmethod
-    def check_image_status(cls, image, page_info, status):
-        if image:
-            if int(status) == 200:
-                if cls.get_image_size(page_info[0]) <= 0:
-                    cls.broken_images.add((str(status), Spider.request[status], page_info[0]))
-            elif int(status) != 200:
-                cls.broken_images.add((str(status), Spider.request[status], page_info[0]))
 
     # Converts raw response data into readable information and checks for proper html formatting
     @abstractmethod
     def gather_links(cls, page_url):
         raise NotImplementedError
 
-    @classmethod
-    def get_image_size(cls,page_url):
-        file = urlopen(page_url)
-        return len(file.read())
 
     # Saves queue data to project files
     @classmethod

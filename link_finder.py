@@ -9,6 +9,7 @@ class LinkFinder(HTMLParser):
         self.base_url = base_url
         self.page_url = page_url
         self.links = set()
+        self.image_links = set()
 
     # When we call HTMLParser feed() this function is called when it encounters an opening tag <a>
     def handle_starttag(self, tag, attrs):
@@ -21,10 +22,13 @@ class LinkFinder(HTMLParser):
             for (attribute, value) in attrs:
                 if attribute == 'src':
                     url = parse.urljoin(self.base_url, value)
-                    self.links.add(url)
+                    self.image_links.add(url)
 
     def page_links(self):
         return self.links
+
+    def image_links(self):
+        return self.image_links
 
     def error(self, message):
         pass
