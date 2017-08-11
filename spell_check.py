@@ -1,3 +1,4 @@
+import re
 from multiprocessing import JoinableQueue
 from threading import Thread
 
@@ -10,6 +11,7 @@ q = JoinableQueue(10000)
 
 
 def add_words_to_queue(page_contents, url):
+    page_contents = re.sub(r'\w+\.\.\.\s?', '', page_contents)
     tknzr = get_tokenizer("en_US")
     counts = {}
     for (word, pos) in tknzr(page_contents.lower()):
