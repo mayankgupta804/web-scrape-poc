@@ -4,7 +4,7 @@ from threading import Thread
 import enchant
 from enchant.tokenize import get_tokenizer
 
-from utilities import append_to_file
+from utilities import append_to_file, ignored
 
 q = JoinableQueue(10000)
 
@@ -33,10 +33,7 @@ class CheckWords(Thread):
         chkr = enchant.DictWithPWL("en_US", "words.txt")
         while True:
             dict = q.get()
-            try:
+            with ignored(UnicodeEncodeError):
                 if not chkr.check(dict['word']):
                     append_to_file(self._file, dict['word'] + "," + str(dict['count']) + "," + dict['url'])
-            except UnicodeEncodeError:
-                pass
-            finally:
-                q.task_done()
+            q.task_done()

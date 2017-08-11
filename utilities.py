@@ -1,8 +1,7 @@
 import os
 import csv
+import contextlib
 
-# Each website is a separate project (folder)
-# from main import config
 from properties import Properties
 
 
@@ -64,7 +63,13 @@ def set_to_file(data, file_name):
     with open(file_name, "w") as out:
         csv_out = csv.writer(out)
         for row in sorted(data, key=lambda x: x[0]):
-            try:
+            with ignored(UnicodeEncodeError):
                 csv_out.writerow(row)
-            except UnicodeEncodeError:
-                pass
+
+
+@contextlib.contextmanager
+def ignored(*exceptions):
+    try:
+        yield
+    except exceptions:
+        pass
