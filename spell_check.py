@@ -27,6 +27,7 @@ class CheckWords(Thread):
     def __init__(self, file_name):
         Thread.__init__(self)
         self._file = file_name
+        self.daemon = True
 
     def run(self):
         chkr = enchant.DictWithPWL("en_US", "words.txt")
