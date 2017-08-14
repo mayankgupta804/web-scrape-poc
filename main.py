@@ -11,6 +11,7 @@ if len(sys.argv) > 1:
     CONFIG = sys.argv[1]
 else:
     CONFIG = "config.properties"
+
 p = Properties(CONFIG)
 
 FOLDER_NAME = p.folder

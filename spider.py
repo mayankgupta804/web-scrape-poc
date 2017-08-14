@@ -84,7 +84,7 @@ class Spider:
     def add_links_to_queue(cls, links, depth):
         for url in links:
             url = url.rstrip('/')
-            if (url in cls.queue) or (url in cls.crawled):
+            if ((url,depth) in cls.queue) or ((url,depth) in cls.crawled):
                 continue
             if cls.domain_name != get_domain_name(url):
                 continue
