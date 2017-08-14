@@ -1,5 +1,5 @@
 from urllib.request import urlopen
-
+from image_checker import add_images_to_queue
 from link_finder import LinkFinder
 from spell_check import CheckWords
 from spider import Spider
@@ -28,6 +28,7 @@ class RequestingSpider(Spider):
             finder.feed(html_string)
         except Exception as e:
             return set()
+        add_images_to_queue(finder.image_links())
         return finder.page_links()
 
     @classmethod
