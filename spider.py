@@ -1,9 +1,7 @@
-import re
 from abc import abstractmethod
 from domain_extractor import *
 from url_open_wrapper import URLOpenWrapper
 from utilities import *
-from urllib.request import urlopen
 
 class Spider:
     project_name = ''

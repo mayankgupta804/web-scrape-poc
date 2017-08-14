@@ -1,5 +1,5 @@
 from driver_wrapper import WebDriverWrapper
-from image_checker import add_images_to_queue, ImageChecker
+from image_checker import *
 from link_finder import LinkFinder
 from properties import Properties
 from spell_check import CheckWords

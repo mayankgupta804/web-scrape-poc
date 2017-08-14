@@ -1,5 +1,4 @@
 from urllib.request import urlopen
-
 from image_checker import add_images_to_queue
 from link_finder import LinkFinder
 from spell_check import CheckWords

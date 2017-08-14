@@ -7,7 +7,6 @@ from headless_spider import HeadlessSpider
 from requesting_spider import RequestingSpider
 from utilities import *
 
-
 if len(sys.argv) > 1:
     CONFIG = sys.argv[1]
 else:

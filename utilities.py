@@ -1,11 +1,8 @@
 import os
 import csv
-
-# Each website is a separate project (folder)
-# from main import config
 from properties import Properties
 
-
+# Each website is a separate project (folder)
 def create_project_dir(directory):
     if not os.path.exists(directory):
         print('Creating directory ' + directory)
