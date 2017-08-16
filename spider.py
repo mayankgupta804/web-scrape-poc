@@ -17,7 +17,6 @@ class Spider:
     queue = set()
     crawled = set()
     broken_links = set()
-    broken_images = set()
     request = {
         301: 'Moved Permanently',
         302: 'Redirect',
