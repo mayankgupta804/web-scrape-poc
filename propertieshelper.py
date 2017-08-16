@@ -5,7 +5,7 @@ import os
 import sys
 
 
-class Properties:
+class PropertiesHelper:
 
     def __init__(self, file="config.properties"):
         self._p = ConfigParser()

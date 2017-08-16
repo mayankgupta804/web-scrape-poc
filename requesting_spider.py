@@ -6,12 +6,19 @@ from spider import Spider
 
 
 class RequestingSpider(Spider):
+
+    image_check = False
+    spell_check = False
+
     def __init__(self, config, base_url, domain_name):
         Spider.__init__(self, config, base_url, domain_name)
         Spider.boot(config)
         self.crawl_page('First spider', (Spider.base_url, 0))
-        ImageChecker(Spider.broken_images_file).start()
-        CheckWords(Spider.spelling_file).start()
+        self.image_check = Spider.image_check
+        if self.image_check:
+            ImageChecker(Spider.broken_images_file).start()
+        if self.spell_check:
+           CheckWords(Spider.spelling_file).start()
 
     @classmethod
     def crawl_page(cls, thread_name, page_url):
@@ -29,7 +36,8 @@ class RequestingSpider(Spider):
             finder.feed(html_string)
         except Exception as e:
             return set()
-        add_images_to_queue(finder.image_links())
+        if cls.image_check:
+            add_images_to_queue(finder.image_links())
         return finder.page_links()
 
     @classmethod

@@ -13,6 +13,8 @@ class Spider:
     broken_links_file = ''
     spelling_file = ''
     broken_images_file = ''
+    image_check = False
+    spell_check = False
     max_depth = int()
     queue = set()
     crawled = set()
@@ -29,10 +31,12 @@ class Spider:
     }
 
     def __init__(self, config, base_url, domain_name):
-        p = Properties(config)
+        p = PropertiesHelper(config)
         self.config = config
         Spider.base_url = base_url
         Spider.domain_name = domain_name
+        Spider.spell_check = p.spell_check
+        Spider.image_check = p.image_check
         Spider.max_depth = p.depth
         Spider.queue_file = p.queue_file
         Spider.crawled_file = p.crawled_file
