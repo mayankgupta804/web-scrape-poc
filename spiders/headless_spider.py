@@ -1,10 +1,11 @@
-from driver_wrapper import WebDriverWrapper
-from image_checker import *
-from link_finder import LinkFinder
-from properties import Properties
-from spell_check import CheckWords
-from spider import Spider
-from utilities import append_to_file
+from utility.image_checker import *
+from utility.link_finder import LinkFinder
+from utility.spell_check import CheckWords
+from utility.utilities import append_to_file
+
+from utility.driver_wrapper import WebDriverWrapper
+from config.properties import Properties
+from spiders.spider import Spider
 
 
 class HeadlessSpider(Spider):

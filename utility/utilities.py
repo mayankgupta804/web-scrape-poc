@@ -1,8 +1,8 @@
-import os
-import csv
 import contextlib
+import csv
+import os
 
-from properties import Properties
+from config.properties import Properties
 
 
 def create_project_dir(directory):

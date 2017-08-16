@@ -3,11 +3,11 @@ import threading
 from multiprocessing import JoinableQueue
 
 import time
+from spiders.requesting_spider import RequestingSpider
+from utility.utilities import *
 
-from domain_extractor import *
-from headless_spider import HeadlessSpider
-from requesting_spider import RequestingSpider
-from utilities import *
+from utility.domain_extractor import *
+from spiders.headless_spider import HeadlessSpider
 
 if len(sys.argv) > 1:
     CONFIG = sys.argv[1]
