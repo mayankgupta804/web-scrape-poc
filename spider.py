@@ -3,6 +3,7 @@ from domain_extractor import *
 from url_open_wrapper import URLOpenWrapper
 from utilities import *
 
+
 class Spider:
     project_name = ''
     base_url = ''
@@ -53,12 +54,12 @@ class Spider:
     def crawl_page(cls, thread_name, page_info):
         if page_info[0] not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
-            print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) + ' | Depth : ' + str(
-                page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)) + ' | Broken Images : ' +str(len(Spider.broken_images)))
+            print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) +
+                  ' | Depth : ' + str(page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)))
             cls.add_links_per_depth(page_info)
             Spider.queue.remove(page_info)
             cls.crawled.add(page_info)
-            cls.check_link_status(page_info)
+            cls.check_link_status(page_info[0])
             cls.update_files()
 
     @classmethod
@@ -68,23 +69,22 @@ class Spider:
             cls.add_links_to_queue(links, page_info[1])
 
     @classmethod
-    def check_link_status(cls, page_info):
-        status = URLOpenWrapper(page_info[0]).get_status_code()
+    def check_link_status(cls, url):
+        status = URLOpenWrapper(url).get_status_code()
         if status in Spider.request:
-            cls.broken_links.add((str(status), Spider.request[status], page_info[0]))
+            cls.broken_links.add((str(status), Spider.request[status], url))
 
     # Converts raw response data into readable information and checks for proper html formatting
     @abstractmethod
     def gather_links(cls, page_url):
         raise NotImplementedError
 
-
     # Saves queue data to project files
     @classmethod
     def add_links_to_queue(cls, links, depth):
         for url in links:
             url = url.rstrip('/')
-            if ((url,depth) in cls.queue) or ((url,depth) in cls.crawled):
+            if ((url, depth) in cls.queue) or ((url, depth) in cls.crawled):
                 continue
             if cls.domain_name != get_domain_name(url):
                 continue
