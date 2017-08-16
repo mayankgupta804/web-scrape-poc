@@ -1,10 +1,10 @@
 from utility.image_checker import *
 from utility.link_finder import LinkFinder
-from utility.spell_check import CheckWords
+from utility.spell_checker import CheckWords
 from utility.utilities import append_to_file
 
 from utility.driver_wrapper import WebDriverWrapper
-from config.properties import Properties
+from config.property_reader import PropertyReader
 from spiders.spider import Spider
 
 
@@ -19,7 +19,9 @@ class HeadlessSpider(Spider):
         Spider.__init__(self, config, base_url, domain_name)
         Spider.boot(config)
         HeadlessSpider.config = config
-        HeadlessSpider.device = Properties(config).device
+        HeadlessSpider.device = PropertyReader(config).device
+        HeadlessSpider.image_check = PropertyReader(config).image_check
+        HeadlessSpider.spell_check = PropertyReader(config).spell_check
         self.crawl_page('First spider', (Spider.base_url, 0))
         if self.image_check:
             ImageChecker(Spider.broken_images_file).start()
@@ -35,11 +37,14 @@ class HeadlessSpider(Spider):
         try:
             with WebDriverWrapper(page_url, cls.device) as driver:
                 html_string = driver.get_page_source()
+                content = driver.get_body_text().text
+                if len(content) == 0:
+                    append_to_file(PropertyReader(cls.config).blank_pages_file, page_url)
                 driver.add_words_to_queue()
             finder = LinkFinder(cls.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
-            append_to_file(Properties(cls.config).error_file, page_url + "\n" + str(e))
+            append_to_file(PropertyReader(cls.config).error_file, page_url + "\n" + str(e))
             print(str(e))
             return set()
         if cls.image_check:
@@ -53,3 +58,5 @@ class HeadlessSpider(Spider):
     @classmethod
     def update_files(cls):
         super().update_files()
+
+

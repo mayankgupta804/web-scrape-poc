@@ -3,11 +3,12 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from utility.spell_check import *
+from utility.spell_checker import *
 from data.devices import device_mappings
 
 
 class WebDriverWrapper:
+
     def __init__(self, page_url, device):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -33,3 +34,6 @@ class WebDriverWrapper:
 
     def add_words_to_queue(self):
         add_words_to_queue(self._driver.find_element_by_tag_name('body').text, self._page_url)
+
+    def get_body_text(self):
+        return self._driver.find_element_by_tag_name("body")

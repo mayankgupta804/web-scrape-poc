@@ -5,7 +5,7 @@ import os
 import sys
 
 
-class Properties:
+class PropertyReader:
 
     def __init__(self, file="config.properties"):
         self._p = ConfigParser()
@@ -65,6 +65,11 @@ class Properties:
     @property
     def broken_links_file(self):
         file = os.path.join(self.folder, self._p.get("FILES", "broken_links", fallback="broken_links.txt"))
+        return file
+
+    @property
+    def blank_pages_file(self):
+        file = os.path.join(self.folder, self._p.get("FILES", "blank_pages", fallback="blank_pages.txt"))
         return file
 
     @property

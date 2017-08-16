@@ -13,8 +13,7 @@ class Spider:
     broken_links_file = ''
     spelling_file = ''
     broken_images_file = ''
-    image_check = False
-    spell_check = False
+    blank_pages_file = ''
     max_depth = int()
     queue = set()
     crawled = set()
@@ -31,18 +30,17 @@ class Spider:
     }
 
     def __init__(self, config, base_url, domain_name):
-        p = Properties(config)
+        p = PropertyReader(config)
         self.config = config
         Spider.base_url = base_url
         Spider.domain_name = domain_name
-        Spider.spell_check = p.spell_check
-        Spider.image_check = p.image_check
         Spider.max_depth = p.depth
         Spider.queue_file = p.queue_file
         Spider.crawled_file = p.crawled_file
         Spider.spelling_file = p.spelling_file
         Spider.broken_links_file = p.broken_links_file
         Spider.broken_images_file = p.broken_images_file
+        Spider.blank_pages_file = p.blank_pages_file
 
     # Creates directory and files for project on first run and starts the spider
     @classmethod
@@ -51,6 +49,7 @@ class Spider:
         cls.queue = file_to_set(cls.queue_file)
         cls.crawled = file_to_set(cls.crawled_file)
         cls.spelling = file_to_set(cls.spelling_file)
+
 
     # Updates user display, fills queue and updates files
     @classmethod
@@ -82,7 +81,6 @@ class Spider:
     def gather_links(cls, page_url):
         raise NotImplementedError
 
-
     # Saves queue data to project files
     @classmethod
     def add_links_to_queue(cls, links, depth):
@@ -100,3 +98,4 @@ class Spider:
         set_to_file(cls.queue, cls.queue_file)
         set_to_file(cls.crawled, cls.crawled_file)
         set_to_file(cls.broken_links, cls.broken_links_file)
+

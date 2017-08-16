@@ -1,8 +1,10 @@
 from urllib.request import urlopen
-from utility.link_finder import LinkFinder
-from utility.spell_check import CheckWords
 
-from utility.image_checker import add_images_to_queue
+from config.property_reader import PropertyReader
+from utility.link_finder import LinkFinder
+from utility.spell_checker import CheckWords
+
+from utility.image_checker import add_images_to_queue, ImageChecker
 from spiders.spider import Spider
 
 
@@ -15,7 +17,9 @@ class RequestingSpider(Spider):
         Spider.__init__(self, config, base_url, domain_name)
         Spider.boot(config)
         self.crawl_page('First spider', (Spider.base_url, 0))
-        self.image_check = Spider.image_check
+        RequestingSpider.image_check = PropertyReader(config).image_check
+        RequestingSpider.spell_check = PropertyReader(config).spell_check
+
         if self.image_check:
             ImageChecker(Spider.broken_images_file).start()
         if self.spell_check:

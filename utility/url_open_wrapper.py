@@ -1,7 +1,7 @@
 import nltk
 import requests
 
-from utility.spell_check import *
+from utility.spell_checker import *
 
 
 class URLOpenWrapper:
