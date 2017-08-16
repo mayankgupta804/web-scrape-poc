@@ -1,8 +1,9 @@
 from urllib.request import urlopen
-from image_checker import add_images_to_queue, ImageChecker
-from link_finder import LinkFinder
-from spell_check import CheckWords
-from spider import Spider
+from utility.link_finder import LinkFinder
+from utility.spell_check import CheckWords
+
+from utility.image_checker import add_images_to_queue
+from spiders.spider import Spider
 
 
 class RequestingSpider(Spider):

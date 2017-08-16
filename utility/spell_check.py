@@ -5,7 +5,7 @@ from threading import Thread
 import enchant
 from enchant.tokenize import get_tokenizer
 
-from utilities import append_to_file, ignored
+from utility.utilities import append_to_file, ignored
 
 q = JoinableQueue(10000)
 
@@ -32,7 +32,7 @@ class CheckWords(Thread):
         self.daemon = True
 
     def run(self):
-        chkr = enchant.DictWithPWL("en_US", "words.txt")
+        chkr = enchant.DictWithPWL("en_US", "resources/words.txt")
         while True:
             dict = q.get()
             with ignored(UnicodeEncodeError):

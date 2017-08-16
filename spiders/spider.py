@@ -1,8 +1,8 @@
 from abc import abstractmethod
-from domain_extractor import *
-from image_checker import ImageChecker
-from url_open_wrapper import URLOpenWrapper
-from utilities import *
+from utility.domain_extractor import *
+from utility.utilities import *
+
+from utility.url_open_wrapper import URLOpenWrapper
 
 class Spider:
     project_name = ''
