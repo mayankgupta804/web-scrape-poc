@@ -21,10 +21,14 @@ def get_image_size(page_url):
 
 
 class ImageChecker(Thread):
+
+    count = 0
+
     def __init__(self, file_name):
         Thread.__init__(self)
         self._file = file_name
         self.daemon = True
+        ImageChecker.count = 0
 
     def run(self):
 
@@ -34,6 +38,12 @@ class ImageChecker(Thread):
             if int(status) == 200:
                 if get_image_size(link) == 0:
                     append_to_file(self._file, str(status) + "," + Spider.request[status] + "," + link)
+                    ImageChecker.count +=1
             elif int(status) != 200:
                 append_to_file(self._file, str(status) + "," + Spider.request[status] + "," + link)
+                ImageChecker.count += 1
+            if ImageChecker.count>0:
+                print('Broken Images : ',ImageChecker.count)
+            else:
+                pass
             queue.task_done()
