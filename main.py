@@ -14,7 +14,7 @@ if len(sys.argv) > 1:
 else:
     CONFIG = "config.properties"
 
-p = PropertiesHelper(CONFIG)
+p = Properties(CONFIG)
 
 FOLDER_NAME = p.folder
 HOMEPAGE = p.home_page

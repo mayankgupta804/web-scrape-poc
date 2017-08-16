@@ -2,7 +2,7 @@ import os
 import csv
 import contextlib
 
-from propertieshelper import PropertiesHelper
+from properties import Properties
 
 
 def create_project_dir(directory):
@@ -13,7 +13,7 @@ def create_project_dir(directory):
 
 # Create queue and crawled files (if not created)
 def create_data_files(config):
-    p = PropertiesHelper(config)
+    p = Properties(config)
     create_project_dir(p.folder)
     queue = p.queue_file
     crawled = p.crawled_file

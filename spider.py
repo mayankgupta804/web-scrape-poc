@@ -31,7 +31,7 @@ class Spider:
     }
 
     def __init__(self, config, base_url, domain_name):
-        p = PropertiesHelper(config)
+        p = Properties(config)
         self.config = config
         Spider.base_url = base_url
         Spider.domain_name = domain_name

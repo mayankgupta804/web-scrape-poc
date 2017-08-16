@@ -1,7 +1,7 @@
 from driver_wrapper import WebDriverWrapper
 from image_checker import *
 from link_finder import LinkFinder
-from propertieshelper import PropertiesHelper
+from properties import Properties
 from spell_check import CheckWords
 from spider import Spider
 from utilities import append_to_file
@@ -18,7 +18,7 @@ class HeadlessSpider(Spider):
         Spider.__init__(self, config, base_url, domain_name)
         Spider.boot(config)
         HeadlessSpider.config = config
-        HeadlessSpider.device = PropertiesHelper(config).device
+        HeadlessSpider.device = Properties(config).device
         self.crawl_page('First spider', (Spider.base_url, 0))
         if self.image_check:
             ImageChecker(Spider.broken_images_file).start()
@@ -38,7 +38,7 @@ class HeadlessSpider(Spider):
             finder = LinkFinder(cls.base_url, page_url)
             finder.feed(html_string)
         except Exception as e:
-            append_to_file(PropertiesHelper(cls.config).error_file, page_url + "\n" + str(e))
+            append_to_file(Properties(cls.config).error_file, page_url + "\n" + str(e))
             print(str(e))
             return set()
         if cls.image_check:
