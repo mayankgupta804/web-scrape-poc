@@ -6,6 +6,7 @@ import sys
 
 
 class Properties:
+
     def __init__(self, file="config.properties"):
         self._p = ConfigParser()
         self._p.read(file)
@@ -29,6 +30,14 @@ class Properties:
     @property
     def threads(self):
         return self._p.getint("PROPERTIES", "no_of_threads", fallback=10)
+
+    @property
+    def spell_check(self):
+        return self._p.getboolean("PROPERTIES", "spell_check", fallback=False)
+
+    @property
+    def image_check(self):
+        return self._p.getboolean("PROPERTIES", "image_check", fallback=False)
 
     @property
     def mode(self):

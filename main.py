@@ -2,6 +2,8 @@ import sys
 import threading
 from multiprocessing import JoinableQueue
 
+import time
+
 from domain_extractor import *
 from headless_spider import HeadlessSpider
 from requesting_spider import RequestingSpider
@@ -33,6 +35,7 @@ if MODE == 'normal':
 elif MODE == 'light':
     spider = RequestingSpider(CONFIG, HOMEPAGE, DOMAIN_NAME)
 
+start = time.time()
 
 # Create worker threads (will die when main exits)
 def create_workers():
@@ -70,3 +73,4 @@ def crawl():
 
 create_workers()
 crawl()
+print('Elapsed time : %s',(time.time()-start))

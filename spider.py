@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from domain_extractor import *
+from image_checker import ImageChecker
 from url_open_wrapper import URLOpenWrapper
 from utilities import *
 
@@ -10,8 +11,8 @@ class Spider:
     queue_file = ''
     crawled_file = ''
     broken_links_file = ''
-    broken_images_file = ''
     spelling_file = ''
+    broken_images_file = ''
     max_depth = int()
     queue = set()
     crawled = set()
@@ -54,7 +55,7 @@ class Spider:
         if page_info[0] not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
             print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) + ' | Depth : ' + str(
-                page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)) + ' | Broken Images : ' +str(len(Spider.broken_images)))
+                page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)))
             cls.add_links_per_depth(page_info)
             Spider.queue.remove(page_info)
             cls.crawled.add(page_info)
@@ -96,4 +97,3 @@ class Spider:
         set_to_file(cls.queue, cls.queue_file)
         set_to_file(cls.crawled, cls.crawled_file)
         set_to_file(cls.broken_links, cls.broken_links_file)
-        set_to_file(cls.broken_images, cls.broken_images_file)

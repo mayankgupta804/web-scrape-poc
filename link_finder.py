@@ -18,8 +18,7 @@ class LinkFinder(HTMLParser):
                 if attribute == 'href':
                     url = parse.urljoin(self.base_url, value)
                     if '#' in url:
-                        separator = '#'
-                        rest = url.split(separator,1)[0]
+                        rest = self.check_links(url)
                         self.links.add(rest)
                     else:
                         self.links.add(url)
@@ -28,6 +27,11 @@ class LinkFinder(HTMLParser):
                 if attribute == 'src':
                     url = parse.urljoin(self.base_url, value)
                     self.images.add(url)
+
+    def check_links(self, url):
+        separator = '#'
+        rest = url.split(separator, 1)[0]
+        return rest
 
     def page_links(self):
         return self.links

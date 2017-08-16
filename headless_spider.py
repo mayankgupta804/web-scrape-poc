@@ -8,6 +8,7 @@ from utilities import append_to_file
 
 
 class HeadlessSpider(Spider):
+
     config = ""
     device = ""
 

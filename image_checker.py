@@ -2,17 +2,31 @@ from multiprocessing import JoinableQueue
 from threading import Thread
 from urllib.request import urlopen
 
-from spider import Spider
 from url_open_wrapper import URLOpenWrapper
-from utilities import append_to_file
+from utilities import append_to_file, set_to_file
 
-q = JoinableQueue(1000)
+queue = JoinableQueue(1000)
 
 def add_images_to_queue(links):
     for link in links:
-        q.put(link)
+        queue.put(link)
+
+def get_image_size(page_url):
+    file = urlopen(page_url)
+    return len(file.read())
 
 class ImageChecker(Thread):
+
+    request = {
+        301: 'Moved Permanently',
+        302: 'Redirect',
+        400: 'Bad Request',
+        401: 'Unauthorised',
+        403: 'Forbidden',
+        404: 'Not Found',
+        408: 'Request Timeout',
+        500: 'Internal Server Error'
+    }
 
     def __init__(self, file_name):
         Thread.__init__(self)
@@ -20,16 +34,13 @@ class ImageChecker(Thread):
         self.daemon = True
 
     def run(self):
-        while True:
 
-            link = q.get()
+        while True:
+            link = queue.get()
             status = URLOpenWrapper(link).get_status_code()
             if int(status) == 200:
-                if self.get_image_size(link) <= 0:
-                    append_to_file(self._file,str(status) + "," + Spider.request[status] + "," + link)
+                if get_image_size(link) == 0:
+                   append_to_file(self._file,str(status) + "," + ImageChecker.request[status] + "," + link)
             elif int(status) != 200:
-                append_to_file(self._file, str(status) + "," + Spider.request[status] + "," + link)
-
-    def get_image_size(self,page_url):
-        file = urlopen(page_url)
-        return len(file.read())
+               append_to_file(self._file, str(status) + "," + ImageChecker.request[status] + "," + link)
+            queue.task_done()
