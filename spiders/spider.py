@@ -97,7 +97,8 @@ class Spider:
             if depth < cls.max_depth:
                 cls.queue.add((url, int(depth) + 1))
                 links_set.add(url)
-        cls.mongod.write_urls_to_db(links_set, depth + 1)
+        if len(links_set)>0:
+            cls.mongod.write_urls_to_db(links_set, depth + 1)
 
     @classmethod
     def update_files(cls):
