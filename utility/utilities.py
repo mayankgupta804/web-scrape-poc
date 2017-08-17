@@ -2,7 +2,7 @@ import contextlib
 import csv
 import os
 
-from config.property_reader import PropertyReader
+from config.properties import Properties
 
 
 def create_project_dir(directory):
@@ -12,17 +12,16 @@ def create_project_dir(directory):
 
 
 # Create queue and crawled files (if not created)
-def create_data_files(config):
-    p = PropertyReader(config)
-    create_project_dir(p.folder)
-    queue = p.queue_file
-    crawled = p.crawled_file
-    spelling = p.spelling_file
-    broken_images = p.broken_images_file
-    broken_links = p.broken_links_file
-    blank_pages = p.blank_pages_file
+def create_data_files():
+    create_project_dir(Properties.folder)
+    queue = Properties.queue_file
+    crawled = Properties.crawled_file
+    spelling = Properties.spelling_file
+    broken_images = Properties.broken_images_file
+    broken_links = Properties.broken_links_file
+    blank_pages = Properties.blank_pages_file
     if not os.path.isfile(queue):
-        write_file(queue, p.home_page + "," + str(0))
+        write_file(queue, Properties.home_page + "," + str(0))
     if not os.path.isfile(crawled):
         write_file(crawled, '')
     if not os.path.isfile(spelling):

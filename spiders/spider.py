@@ -1,4 +1,6 @@
 from abc import abstractmethod
+
+from config.properties import Properties
 from utility.domain_extractor import *
 from utility.utilities import *
 
@@ -31,24 +33,22 @@ class Spider:
         500: 'Internal Server Error'
     }
 
-    def __init__(self, config, base_url, domain_name, mongod):
-        p = PropertyReader(config)
-        self.config = config
+    def __init__(self, base_url, domain_name, mongod):
         Spider.mongod = mongod
         Spider.base_url = base_url
         Spider.domain_name = domain_name
-        Spider.max_depth = p.depth
-        Spider.queue_file = p.queue_file
-        Spider.crawled_file = p.crawled_file
-        Spider.spelling_file = p.spelling_file
-        Spider.broken_links_file = p.broken_links_file
-        Spider.broken_images_file = p.broken_images_file
-        Spider.blank_pages_file = p.blank_pages_file
+        Spider.max_depth = Properties.depth
+        Spider.queue_file = Properties.queue_file
+        Spider.crawled_file = Properties.crawled_file
+        Spider.spelling_file = Properties.spelling_file
+        Spider.broken_links_file = Properties.broken_links_file
+        Spider.broken_images_file = Properties.broken_images_file
+        Spider.blank_pages_file = Properties.blank_pages_file
 
     # Creates directory and files for project on first run and starts the spider
     @classmethod
-    def boot(cls, config):
-        create_data_files(config)
+    def boot(cls):
+        create_data_files()
         cls.queue = file_to_set(cls.queue_file)
         cls.crawled = file_to_set(cls.crawled_file)
         cls.spelling = file_to_set(cls.spelling_file)

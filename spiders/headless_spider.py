@@ -1,3 +1,4 @@
+from config.properties import Properties
 from utility.image_checker import *
 from utility.link_finder import LinkFinder
 from utility.spell_checker import CheckWords
@@ -14,13 +15,12 @@ class HeadlessSpider(Spider):
     image_check = False
     spell_check = False
 
-    def __init__(self, config, base_url, domain_name, mongod):
-        Spider.__init__(self, config, base_url, domain_name, mongod)
-        Spider.boot(config)
-        HeadlessSpider.config = config
-        HeadlessSpider.device = PropertyReader(config).device
-        HeadlessSpider.image_check = PropertyReader(config).image_check
-        HeadlessSpider.spell_check = PropertyReader(config).spell_check
+    def __init__(self, base_url, domain_name, mongod):
+        Spider.__init__(self, base_url, domain_name, mongod)
+        Spider.boot()
+        HeadlessSpider.device = Properties.device
+        HeadlessSpider.image_check = Properties.image_check
+        HeadlessSpider.spell_check = Properties.spell_check
         self.crawl_page('First spider', (Spider.base_url, 0))
         if self.image_check:
             ImageChecker(Spider.broken_images_file).start()

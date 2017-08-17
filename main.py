@@ -11,34 +11,25 @@ from utility.utilities import *
 from utility.domain_extractor import *
 from spiders.headless_spider import HeadlessSpider
 
-if len(sys.argv) > 1:
-    CONFIG = sys.argv[1]
-else:
-    CONFIG = "config.properties"
+# if len(sys.argv) > 1:
+#     CONFIG = sys.argv[1]
+# else:
+#     CONFIG = "config.properties"
 
-p = PropertyReader(CONFIG)
 
-FOLDER_NAME = p.folder
-HOMEPAGE = p.home_page
-NUMBER_OF_THREADS = p.threads
-MODE = p.mode
+FOLDER_NAME = Properties.folder
+HOMEPAGE = Properties.home_page
+NUMBER_OF_THREADS = Properties.threads
+MODE = Properties.mode
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
-QUEUE_FILE = p.queue_file
-CRAWLED_FILE = p.crawled_file
-SPELLINGS_FILE = p.spelling_file
-BROKEN_LINKS = p.broken_links_file
-MAX_DEPTH = p.depth
-BROKEN_IMAGES = p.broken_images_file
+QUEUE_FILE = Properties.queue_file
 queue = JoinableQueue()
 sys.setrecursionlimit(10000)
 
 if MODE == 'normal':
-    spider = HeadlessSpider(CONFIG, HOMEPAGE, DOMAIN_NAME, MongoDB())
+    spider = HeadlessSpider(HOMEPAGE, DOMAIN_NAME, MongoDB())
 elif MODE == 'light':
-    spider = RequestingSpider(CONFIG, HOMEPAGE, DOMAIN_NAME, MongoDB())
-
-start = time.time()
-
+    spider = RequestingSpider(HOMEPAGE, DOMAIN_NAME, MongoDB())
 
 # Create worker threads (will die when main exits)
 def create_workers():
@@ -76,4 +67,3 @@ def crawl():
 
 create_workers()
 crawl()
-print('Elapsed time : %s', (time.time() - start))

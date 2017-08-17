@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 
-from config.property_reader import PropertyReader
+from config.properties import Properties
 from utility.link_finder import LinkFinder
 from utility.spell_checker import CheckWords
 
@@ -12,12 +12,12 @@ class RequestingSpider(Spider):
     image_check = False
     spell_check = False
 
-    def __init__(self, config, base_url, domain_name, mongod):
-        Spider.__init__(self, config, base_url, domain_name, mongod)
-        Spider.boot(config)
+    def __init__(self, base_url, domain_name, mongod):
+        Spider.__init__(self, base_url, domain_name, mongod)
+        Spider.boot()
         self.crawl_page('First spider', (Spider.base_url, 0))
-        RequestingSpider.image_check = PropertyReader(config).image_check
-        RequestingSpider.spell_check = PropertyReader(config).spell_check
+        RequestingSpider.image_check = Properties.image_check
+        RequestingSpider.spell_check = Properties.spell_check
 
         if self.image_check:
             ImageChecker(Spider.broken_images_file).start()
