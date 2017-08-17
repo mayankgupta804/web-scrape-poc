@@ -34,11 +34,9 @@ class HeadlessSpider(Spider):
     @classmethod
     def gather_links(cls, page_url):
         try:
-            with WebDriverWrapper(page_url, cls.device) as driver:
+            with WebDriverWrapper(page_url, cls.device,cls.mongod) as driver:
                 html_string = driver.get_page_source()
-                content = driver.get_body_text().text
-                if len(content) == 0:
-                    append_to_file(PropertyReader(cls.config).blank_pages_file, page_url)
+                driver.is_blank_page()
                 driver.add_words_to_queue()
             finder = LinkFinder(cls.base_url, page_url)
             finder.feed(html_string)

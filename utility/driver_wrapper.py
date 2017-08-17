@@ -8,8 +8,7 @@ from data.devices import device_mappings
 
 
 class WebDriverWrapper:
-
-    def __init__(self, page_url, device):
+    def __init__(self, page_url, device, mongod):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         if device is not None:
@@ -17,7 +16,9 @@ class WebDriverWrapper:
             chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
         chrome_options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
         self._page_url = page_url
-        self._driver = webdriver.Chrome(executable_path=os.path.abspath("resources/chromedriver"), chrome_options=chrome_options)
+        self.mongod = mongod
+        self._driver = webdriver.Chrome(executable_path=os.path.abspath("resources/chromedriver"),
+                                        chrome_options=chrome_options)
 
     def __enter__(self):
         self._driver.get(self._page_url)
@@ -35,5 +36,7 @@ class WebDriverWrapper:
     def add_words_to_queue(self):
         add_words_to_queue(self._driver.find_element_by_tag_name('body').text, self._page_url)
 
-    def get_body_text(self):
-        return self._driver.find_element_by_tag_name("body")
+    def is_blank_page(self):
+        body = self._driver.find_element_by_tag_name("body")
+        if len(body) == 0:
+            self.mongod.add_links_to_blank_page(self._page_url)

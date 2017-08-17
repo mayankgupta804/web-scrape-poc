@@ -21,12 +21,11 @@ def get_image_size(page_url):
 
 
 class ImageChecker(Thread):
-
     count = 0
 
-    def __init__(self, file_name):
+    def __init__(self, mongod):
         Thread.__init__(self)
-        self._file = file_name
+        self.mongod = mongod
         self.daemon = True
         ImageChecker.count = 0
 
@@ -37,13 +36,13 @@ class ImageChecker(Thread):
             status = URLOpenWrapper(link).get_status_code()
             if int(status) == 200:
                 if get_image_size(link) == 0:
-                    append_to_file(self._file, str(status) + "," + Spider.request[status] + "," + link)
-                    ImageChecker.count +=1
+                    self.mongod.add_image_links_to_missing_images(link, status, Spider.request[status])
+                    ImageChecker.count += 1
             elif int(status) != 200:
-                append_to_file(self._file, str(status) + "," + Spider.request[status] + "," + link)
+                self.mongod.add_image_links_to_missing_images(link, status, Spider.request[status])
                 ImageChecker.count += 1
-            if ImageChecker.count>0:
-                print('Broken Images : ',ImageChecker.count)
+            if ImageChecker.count > 0:
+                print('Broken Images : ', ImageChecker.count)
             else:
                 pass
             queue.task_done()
