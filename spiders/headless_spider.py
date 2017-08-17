@@ -15,8 +15,8 @@ class HeadlessSpider(Spider):
     image_check = False
     spell_check = False
 
-    def __init__(self, config, base_url, domain_name):
-        Spider.__init__(self, config, base_url, domain_name)
+    def __init__(self, config, base_url, domain_name,mongod):
+        Spider.__init__(self, config, base_url, domain_name,mongod)
         Spider.boot(config)
         HeadlessSpider.config = config
         HeadlessSpider.device = PropertyReader(config).device

@@ -4,7 +4,9 @@ from utility.utilities import *
 
 from utility.url_open_wrapper import URLOpenWrapper
 
+
 class Spider:
+    mongod = None
     project_name = ''
     base_url = ''
     domain_name = ''
@@ -29,9 +31,10 @@ class Spider:
         500: 'Internal Server Error'
     }
 
-    def __init__(self, config, base_url, domain_name):
+    def __init__(self, config, base_url, domain_name, mongod):
         p = PropertyReader(config)
         self.config = config
+        Spider.mongod = mongod
         Spider.base_url = base_url
         Spider.domain_name = domain_name
         Spider.max_depth = p.depth
@@ -50,14 +53,14 @@ class Spider:
         cls.crawled = file_to_set(cls.crawled_file)
         cls.spelling = file_to_set(cls.spelling_file)
 
-
     # Updates user display, fills queue and updates files
     @classmethod
     def crawl_page(cls, thread_name, page_info):
         if page_info[0] not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_info[0])
-            print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) + ' | Depth : ' + str(
-                page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)))
+            print(
+                'Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) + ' | Depth : ' + str(
+                    page_info[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)))
             cls.add_links_per_depth(page_info)
             Spider.queue.remove(page_info)
             cls.crawled.add(page_info)
@@ -84,18 +87,20 @@ class Spider:
     # Saves queue data to project files
     @classmethod
     def add_links_to_queue(cls, links, depth):
+        links_set = set()
         for url in links:
             url = url.rstrip('/')
-            if ((url,depth) in cls.queue) or ((url,depth) in cls.crawled):
+            if ((url, depth) in cls.queue) or ((url, depth) in cls.crawled):
                 continue
             if cls.domain_name != get_domain_name(url):
                 continue
             if depth < cls.max_depth:
                 cls.queue.add((url, int(depth) + 1))
+                links_set.add(url)
+        cls.mongod.write_urls_to_db(links_set, depth + 1)
 
     @classmethod
     def update_files(cls):
         set_to_file(cls.queue, cls.queue_file)
         set_to_file(cls.crawled, cls.crawled_file)
         set_to_file(cls.broken_links, cls.broken_links_file)
-

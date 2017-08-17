@@ -3,6 +3,8 @@ import threading
 from multiprocessing import JoinableQueue
 
 import time
+
+from mongo.mongodb import MongoDB
 from spiders.requesting_spider import RequestingSpider
 from utility.utilities import *
 
@@ -31,11 +33,12 @@ queue = JoinableQueue()
 sys.setrecursionlimit(10000)
 
 if MODE == 'normal':
-    spider = HeadlessSpider(CONFIG, HOMEPAGE, DOMAIN_NAME)
+    spider = HeadlessSpider(CONFIG, HOMEPAGE, DOMAIN_NAME, MongoDB())
 elif MODE == 'light':
-    spider = RequestingSpider(CONFIG, HOMEPAGE, DOMAIN_NAME)
+    spider = RequestingSpider(CONFIG, HOMEPAGE, DOMAIN_NAME, MongoDB())
 
 start = time.time()
+
 
 # Create worker threads (will die when main exits)
 def create_workers():
@@ -73,4 +76,4 @@ def crawl():
 
 create_workers()
 crawl()
-print('Elapsed time : %s',(time.time()-start))
+print('Elapsed time : %s', (time.time() - start))
