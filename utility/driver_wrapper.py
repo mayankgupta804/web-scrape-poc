@@ -37,6 +37,6 @@ class WebDriverWrapper:
         add_words_to_queue(self._driver.find_element_by_tag_name('body').text, self._page_url)
 
     def is_blank_page(self):
-        body = self._driver.find_element_by_tag_name("body")
+        body = self._driver.find_element_by_tag_name("body").text
         if len(body) == 0:
             self.mongod.add_links_to_blank_page(self._page_url)
