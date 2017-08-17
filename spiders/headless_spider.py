@@ -9,14 +9,13 @@ from spiders.spider import Spider
 
 
 class HeadlessSpider(Spider):
-
     config = ""
     device = ""
     image_check = False
     spell_check = False
 
-    def __init__(self, config, base_url, domain_name,mongod):
-        Spider.__init__(self, config, base_url, domain_name,mongod)
+    def __init__(self, config, base_url, domain_name, mongod):
+        Spider.__init__(self, config, base_url, domain_name, mongod)
         Spider.boot(config)
         HeadlessSpider.config = config
         HeadlessSpider.device = PropertyReader(config).device
@@ -26,7 +25,7 @@ class HeadlessSpider(Spider):
         if self.image_check:
             ImageChecker(Spider.broken_images_file).start()
         if self.spell_check:
-            CheckWords(Spider.spelling_file).start()
+            CheckWords(Spider.spelling_file, mongod).start()
 
     @classmethod
     def crawl_page(cls, thread_name, page_url):
@@ -58,5 +57,3 @@ class HeadlessSpider(Spider):
     @classmethod
     def update_files(cls):
         super().update_files()
-
-

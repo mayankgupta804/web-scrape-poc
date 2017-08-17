@@ -12,3 +12,8 @@ class MongoWriter:
             posts.append({"url": link, "depth": depth})
 
         self.urls.insert_many(posts)
+
+    def add_word_to_dictionary(self, dict):
+        self.spellings.update({"word": dict['word']},{"word": dict['word']}, upsert=True)
+        self.spellings.update({"word": dict['word']},
+                              {'$push': {"info": {"count": dict['count'], "url": dict['url']}}})

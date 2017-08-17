@@ -26,10 +26,11 @@ def add_words_to_queue(page_contents, url):
 
 
 class CheckWords(Thread):
-    def __init__(self, file_name):
+    def __init__(self, file_name, mongod):
         Thread.__init__(self)
         self._file = file_name
         self.daemon = True
+        self.mongod = mongod
 
     def run(self):
         chkr = enchant.DictWithPWL("en_US", "resources/words.txt")
@@ -37,5 +38,5 @@ class CheckWords(Thread):
             dict = q.get()
             with ignored(UnicodeEncodeError):
                 if not chkr.check(dict['word']):
-                    append_to_file(self._file, dict['word'] + "," + str(dict['count']) + "," + dict['url'])
+                    self.mongod.add_word_to_dictionary(dict)
             q.task_done()
