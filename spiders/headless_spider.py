@@ -1,4 +1,5 @@
 from config.properties import Properties
+from rabbitmq.connect import get_rabbit_mq_channel
 from utility.image_checker import *
 from utility.link_finder import LinkFinder
 from utility.spell_checker import CheckWords
@@ -17,24 +18,24 @@ class HeadlessSpider(Spider):
 
     def __init__(self, base_url, domain_name, mongod):
         Spider.__init__(self, base_url, domain_name, mongod)
-        Spider.boot()
+        # Spider.boot()
         HeadlessSpider.device = Properties.device
         HeadlessSpider.image_check = Properties.image_check
         HeadlessSpider.spell_check = Properties.spell_check
-        self.crawl_page('First spider', (Spider.base_url, 0))
-        if self.image_check:
-            ImageChecker(Spider.broken_images_file).start()
-        if self.spell_check:
-            CheckWords(Spider.spelling_file, mongod).start()
+        self.crawl_page('First spider', Spider.base_url, 0, get_rabbit_mq_channel())
+        # if self.image_check:
+        #     ImageChecker(Spider.broken_images_file).start()
+        # if self.spell_check:
+        #     CheckWords(Spider.spelling_file, mongod).start()
 
     @classmethod
-    def crawl_page(cls, thread_name, page_url):
-        super().crawl_page(thread_name, page_url)
+    def crawl_page(cls, thread_name, page_url, depth, channel):
+        super().crawl_page(thread_name, page_url, depth, channel)
 
     @classmethod
     def gather_links(cls, page_url):
         try:
-            with WebDriverWrapper(page_url, cls.device,cls.mongod) as driver:
+            with WebDriverWrapper(page_url, cls.device, cls.mongod) as driver:
                 html_string = driver.get_page_source()
                 driver.is_blank_page()
                 driver.add_words_to_queue()
@@ -49,9 +50,5 @@ class HeadlessSpider(Spider):
         return finder.page_links()
 
     @classmethod
-    def add_links_to_queue(cls, links, depth):
-        super().add_links_to_queue(links, depth)
-
-    @classmethod
-    def update_files(cls):
-        super().update_files()
+    def add_links_to_queue(cls, links, depth, channel):
+        super().add_links_to_queue(links, depth, channel)
