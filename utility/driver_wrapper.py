@@ -22,7 +22,7 @@ class WebDriverWrapper:
                                         chrome_options=chrome_options)
 
     def __enter__(self):
-        Logger.logger.info("opening with webdriver" + self._page_url)
+        Logger.logger.info("opening with webdriver " + self._page_url)
         self._driver.get(self._page_url)
         return self
 

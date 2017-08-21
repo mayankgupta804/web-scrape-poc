@@ -3,8 +3,6 @@ from threading import Thread
 from urllib.request import urlopen
 
 from spiders.spider import Spider
-from utility.utilities import append_to_file
-
 from utility.url_open_wrapper import URLOpenWrapper
 
 queue = JoinableQueue()
@@ -32,17 +30,20 @@ class ImageChecker(Thread):
     def run(self):
 
         while True:
-            link = queue.get()
-            status = URLOpenWrapper(link).get_status_code()
-            if int(status) == 200:
-                if get_image_size(link) == 0:
+            try:
+                link = queue.get()
+                status = int(URLOpenWrapper(link).get_status_code())
+                if status == 200:
+                    if get_image_size(link) == 0:
+                        self.mongod.add_image_links_to_missing_images(link, status, Spider.request[status])
+                        ImageChecker.count += 1
+                elif status != 200:
                     self.mongod.add_image_links_to_missing_images(link, status, Spider.request[status])
                     ImageChecker.count += 1
-            elif int(status) != 200:
-                self.mongod.add_image_links_to_missing_images(link, status, Spider.request[status])
-                ImageChecker.count += 1
-            if ImageChecker.count > 0:
-                print('Broken Images : ', ImageChecker.count)
-            else:
+                if ImageChecker.count > 0:
+                    print('Broken Images : ', ImageChecker.count)
+                else:
+                    pass
+                queue.task_done()
+            except:
                 pass
-            queue.task_done()

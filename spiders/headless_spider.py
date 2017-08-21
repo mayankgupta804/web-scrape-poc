@@ -24,8 +24,8 @@ class HeadlessSpider(Spider):
         HeadlessSpider.image_check = Properties.image_check
         HeadlessSpider.spell_check = Properties.spell_check
         self.crawl_page('First spider', Spider.base_url, 0, get_rabbit_mq_channel())
-        # if self.image_check:
-        #     ImageChecker(Spider.broken_images_file).start()
+        if self.image_check:
+            ImageChecker(Spider.broken_images_file).start()
         if self.spell_check:
             CheckWords(Spider.spelling_file, mongod).start()
 
@@ -47,8 +47,8 @@ class HeadlessSpider(Spider):
             Logger.logger.error(page_url + "\n" + str(e))
             print(str(e))
             return set()
-        # if cls.image_check:
-        #     add_images_to_queue(finder.image_links())
+        if cls.image_check:
+            add_images_to_queue(finder.image_links())
         return finder.page_links()
 
     @classmethod
