@@ -1,11 +1,14 @@
+from mongo.constants import Constants
+
+
 class MongoWriter:
-    def __init__(self, db):
-        self.db = db
-        self.urls = self.db["urls"]
-        self.images = self.db["images"]
-        self.links = self.db["links"]
-        self.spellings = self.db["spellings"]
-        self.blank_page = self.db["blankpage"]
+    def __init__(self, documents):
+        self.documents = documents
+        self.urls = self.documents[Constants.CRAWLED_DOCUMENT]
+        self.images = self.documents[Constants.MISSING_IMAGES_DOCUMENT]
+        self.links = self.documents[Constants.BROKEN_LINKS_DOCUMENT]
+        self.spellings = self.documents[Constants.SPELLINGS_DOCUMENT]
+        self.blank_page = self.documents[Constants.BLANK_PAGE_DOCUMENT]
 
     def write_urls_to_db(self, links, depth):
         posts = []
