@@ -7,6 +7,7 @@ from spiders.crawler import Crawler
 from spiders.headless_spider import HeadlessSpider
 from spiders.requesting_spider import RequestingSpider
 from utility.domain_extractor import *
+from utility.logger import Logger
 
 HOMEPAGE = Properties.home_page
 NUMBER_OF_THREADS = Properties.threads
@@ -29,6 +30,7 @@ def create_workers():
         thrd = Crawler()
         thrd.start()
         threads.append(thrd)
+        Logger.logger.info("Thread %r started", thrd.getName())
 
 
 create_workers()

@@ -7,7 +7,7 @@ from utility.utilities import append_to_file
 
 from utility.url_open_wrapper import URLOpenWrapper
 
-queue = JoinableQueue(1000)
+queue = JoinableQueue()
 
 
 def add_images_to_queue(links):

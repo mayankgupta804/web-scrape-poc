@@ -5,6 +5,7 @@ import pika
 from config.properties import Properties
 from rabbitmq.connect import get_rabbit_mq_channel
 from utility.domain_extractor import *
+from utility.logger import Logger
 from utility.utilities import *
 
 from utility.url_open_wrapper import URLOpenWrapper
@@ -50,7 +51,7 @@ class Spider:
             print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) +
                   ' | Depth : ' + str(depth) + ' | Broken Links : ' + str(len(Spider.broken_links)))
             if depth <= cls.max_depth:
-                cls.add_links_to_queue(cls.gather_links(page_url), depth, channel)
+                cls.add_links_to_queue(cls.gather_links(page_url), depth, channel, thread_name)
             cls.mongod.write_url_to_db(page_url, depth)
             cls.check_link_status(page_url)
 
@@ -67,7 +68,8 @@ class Spider:
 
     # Saves queue data to project files
     @classmethod
-    def add_links_to_queue(cls, links, depth, channel):
+    def add_links_to_queue(cls, links, depth, channel, thread_name):
+        Logger.logger.info(thread_name + " adding " + str(len(links)) + " links to queue.")
         for url in links:
             url = url.rstrip('/')
             if cls.domain_name != get_domain_name(url):
@@ -78,6 +80,5 @@ class Spider:
                                       body=url,
                                       properties=pika.BasicProperties(
                                           delivery_mode=2,  # make message persistent
-                                          headers={'depth': depth+1}
+                                          headers={'depth': depth + 1}
                                       ))
-

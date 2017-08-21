@@ -5,6 +5,7 @@ import pika
 from rabbitmq.connect import get_rabbit_mq_channel
 from spiders.headless_spider import HeadlessSpider
 from spiders.spider import Spider
+from utility.logger import Logger
 
 
 class Crawler(Thread):
@@ -26,6 +27,8 @@ class Crawler(Thread):
         self._channel.start_consuming()
 
     def crawl(self, ch, method, properties, body):
-        HeadlessSpider.crawl_page(self.getName(), body.decode("utf-8"), properties.headers['depth'], self._channel)
+        url = body.decode("utf-8")
+        Logger.logger.info(self.getName() + " processing " + url)
+        HeadlessSpider.crawl_page(self.getName(), url, properties.headers['depth'], self._channel)
         ch.basic_ack(delivery_tag=method.delivery_tag)
-
+        Logger.logger.info(self.getName() + " finished processing " + url)

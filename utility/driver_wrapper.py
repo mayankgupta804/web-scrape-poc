@@ -3,6 +3,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+from utility.logger import Logger
 from utility.spell_checker import *
 from data.devices import device_mappings
 
@@ -21,6 +22,7 @@ class WebDriverWrapper:
                                         chrome_options=chrome_options)
 
     def __enter__(self):
+        Logger.logger.info("opening with webdriver" + self._page_url)
         self._driver.get(self._page_url)
         return self
 
