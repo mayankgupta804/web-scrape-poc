@@ -15,6 +15,7 @@ DOMAIN_NAME = get_domain_name(HOMEPAGE)
 QUEUE_FILE = Properties.queue_file
 queue = JoinableQueue()
 sys.setrecursionlimit(10000)
+threads = []
 
 if MODE == 'normal':
     spider = HeadlessSpider(HOMEPAGE, DOMAIN_NAME, MongoDB())
@@ -25,7 +26,12 @@ elif MODE == 'light':
 # Create worker threads (will die when main exits)
 def create_workers():
     for _ in range(NUMBER_OF_THREADS):
-        Crawler().start()
+        thrd = Crawler()
+        thrd.start()
+        threads.append(thrd)
 
 
 create_workers()
+
+for thread in threads:
+    thread.join()

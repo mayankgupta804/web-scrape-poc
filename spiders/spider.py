@@ -48,7 +48,7 @@ class Spider:
         if not cls.mongod.is_url_crawled(page_url):
             print(thread_name + ' now crawling ' + page_url)
             print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) +
-                  ' | Depth : ' + str(page_url[1]) + ' | Broken Links : ' + str(len(Spider.broken_links)))
+                  ' | Depth : ' + str(depth) + ' | Broken Links : ' + str(len(Spider.broken_links)))
             if depth <= cls.max_depth:
                 cls.add_links_to_queue(cls.gather_links(page_url), depth, channel)
             cls.mongod.write_url_to_db(page_url, depth)
