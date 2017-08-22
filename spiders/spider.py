@@ -52,14 +52,15 @@ class Spider:
                   ' | Depth : ' + str(depth) + ' | Broken Links : ' + str(len(Spider.broken_links)))
             if depth <= cls.max_depth:
                 cls.add_links_to_queue(cls.gather_links(page_url), depth, channel, thread_name)
-            cls.mongod.write_url_to_db(page_url, depth)
-            cls.check_link_status(page_url)
+            status = cls.check_link_status(page_url)
+            cls.mongod.write_url_to_db(page_url, depth, status)
 
     @classmethod
     def check_link_status(cls, page_info):
         status = URLOpenWrapper(page_info).get_status_code()
         if status in Spider.request:
             cls.broken_links.add((str(status), Spider.request[status], page_info))
+        return status
 
     # Converts raw response data into readable information and checks for proper html formatting
     @abstractmethod

@@ -17,8 +17,8 @@ class MongoWriter:
 
         self.urls.insert_many(posts)
 
-    def write_url_to_db(self, link, depth):
-        self.urls.insert_one({"url": link, "depth": depth})
+    def write_url_to_db(self, link, depth, status):
+        self.urls.insert_one({"url": link, "depth": depth, "response_code": status})
 
     def add_word_to_dictionary(self, dict):
         self.spellings.update({"word": dict['word']}, {"word": dict['word']}, upsert=True)

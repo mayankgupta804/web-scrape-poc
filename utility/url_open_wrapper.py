@@ -1,13 +1,26 @@
-import nltk
-import requests
+from urllib.error import HTTPError, URLError
 
+import nltk
+import urllib.request
+
+from utility.logger import Logger
 from utility.spell_checker import *
 
 
 class URLOpenWrapper:
     def __init__(self, page_url):
         self._page_url = page_url
-        self._response = requests.get(page_url)
+        try:
+            self._response = urllib.request.urlopen(page_url)
+            self._response_code = self._response.getcode()
+        except HTTPError as e:
+            Logger.logger.error('The server couldn\'t fulfill the request.')
+            Logger.logger.error('Error code: ' + str(e.code))
+            self._response_code = e.code
+        except URLError as e:
+            Logger.logger.error('We failed to reach a server.')
+            Logger.logger.error('Reason: ' + str(e.reason))
+            self._response_code = 0
 
     def get_page_source(self):
         if 'text/html' in self._response.headers('Content-Type'):
@@ -20,4 +33,7 @@ class URLOpenWrapper:
         add_words_to_queue(nltk.clean_html(self._response), self._page_url)
 
     def get_status_code(self):
-        return self._response.status_code
+        return self._response_code
+
+    def get_size(self):
+        return len(self._response.read())
