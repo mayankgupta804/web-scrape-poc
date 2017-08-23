@@ -30,3 +30,15 @@ class MongoReader:
 
     def get_blank_page_count(self):
         return self.blank_page.count()
+
+    def get_all_spellings(self):
+        data = []
+        spellings = list(self.spellings.find())
+        for spelling in spellings:
+            word = spelling["word"]
+            for i, item in enumerate(spelling["info"]):
+                if i is 0:
+                    data.append([word,str(item["count"]), item["url"]])
+                else:
+                    data.append({"", str(item["count"]), item["url"]})
+        return data
