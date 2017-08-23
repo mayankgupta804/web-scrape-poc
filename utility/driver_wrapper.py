@@ -3,9 +3,8 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from utility.logger import Logger
-from utility.spell_checker import *
 from data.devices import device_mappings
+from utility.spell_checker import *
 
 
 class WebDriverWrapper:
@@ -42,3 +41,17 @@ class WebDriverWrapper:
         body = self._driver.find_element_by_tag_name("body").text
         if len(body) == 0:
             self.mongod.add_links_to_blank_page(self._page_url)
+
+    def get_all_links(self):
+        links = []
+        elems = self._driver.find_elements_by_xpath("//a[@href]")
+        for elem in elems:
+            links.append(elem.get_attribute("href"))
+        return links
+
+    def get_image_links(self):
+        links = []
+        elems = self._driver.find_elements_by_xpath("//img[@src]")
+        for elem in elems:
+            links.append(elem.get_attribute("src"))
+        return links

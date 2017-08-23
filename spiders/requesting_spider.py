@@ -48,6 +48,3 @@ class RequestingSpider(Spider):
     def add_links_to_queue(cls, links, depth):
         super().add_links_to_queue(links, depth)
 
-    @classmethod
-    def update_files(cls):
-        super().update_files()

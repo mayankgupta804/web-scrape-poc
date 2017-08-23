@@ -46,38 +46,3 @@ class PropertyReader:
     @property
     def device(self):
         return self._p.get("PROPERTIES", "device")
-
-    @property
-    def crawled_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "crawled", fallback="crawled.txt"))
-        return file
-
-    @property
-    def queue_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "queue", fallback="queue.txt"))
-        return file
-
-    @property
-    def spelling_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "spelling", fallback="spelling.txt"))
-        return file
-
-    @property
-    def broken_links_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "broken_links", fallback="broken_links.txt"))
-        return file
-
-    @property
-    def blank_pages_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "blank_pages", fallback="blank_pages.txt"))
-        return file
-
-    @property
-    def error_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "errors", fallback="errors.txt"))
-        return file
-
-    @property
-    def broken_images_file(self):
-        file = os.path.join(self.folder, self._p.get("FILES", "broken_images", fallback="broken_images.txt"))
-        return file

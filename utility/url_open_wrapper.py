@@ -1,9 +1,8 @@
+import urllib.request
 from urllib.error import HTTPError, URLError
 
 import nltk
-import urllib.request
 
-from utility.logger import Logger
 from utility.spell_checker import *
 
 

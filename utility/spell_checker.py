@@ -5,7 +5,8 @@ from threading import Thread
 import enchant
 from enchant.tokenize import get_tokenizer
 
-from utility.utilities import append_to_file, ignored
+from utility.logger import Logger
+from utility.utilities import ignored
 
 q = JoinableQueue(10000)
 
@@ -35,8 +36,11 @@ class CheckWords(Thread):
     def run(self):
         chkr = enchant.DictWithPWL("en_US", "resources/words.txt")
         while True:
-            dict = q.get()
-            with ignored(UnicodeEncodeError):
-                if not chkr.check(dict['word']):
-                    self.mongod.add_word_to_dictionary(dict)
-            q.task_done()
+            try:
+                dict = q.get()
+                with ignored(UnicodeEncodeError):
+                    if not chkr.check(dict['word']):
+                        self.mongod.add_word_to_dictionary(dict)
+                q.task_done()
+            except EOFError as e:
+                Logger.logger.info("Spell checker EOFError : " + str(e))
