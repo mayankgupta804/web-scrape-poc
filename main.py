@@ -2,6 +2,7 @@ import sys
 
 from config.properties import Properties
 from mongo.mongodb import MongoDB
+from report.report_generator import Report
 from spiders.crawler import Crawler
 from spiders.headless_spider import HeadlessSpider
 from spiders.requesting_spider import RequestingSpider
@@ -12,11 +13,12 @@ HOMEPAGE = Properties.home_page
 MODE = Properties.mode
 DOMAIN_NAME = get_domain_name(HOMEPAGE)
 threads = []
+mongod = MongoDB()
 
 if MODE == 'normal':
-    spider = HeadlessSpider(HOMEPAGE, DOMAIN_NAME, MongoDB())
+    spider = HeadlessSpider(HOMEPAGE, DOMAIN_NAME, mongod)
 elif MODE == 'light':
-    spider = RequestingSpider(HOMEPAGE, DOMAIN_NAME, MongoDB())
+    spider = RequestingSpider(HOMEPAGE, DOMAIN_NAME, mongod)
 
 
 # Create worker threads (will die when main exits)
@@ -32,3 +34,5 @@ create_workers()
 
 for thread in threads:
     thread.join()
+
+Report(mongod).create_header_table()

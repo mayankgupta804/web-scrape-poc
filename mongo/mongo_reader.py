@@ -15,3 +15,18 @@ class MongoReader:
             return False
         else:
             return True
+
+    def get_crawled_urls_count(self):
+        return self.urls.count()
+
+    def get_missing_images_count(self):
+        return self.images.count()
+
+    def get_broken_links_count(self):
+        return self.links.count()
+
+    def get_spellings_count(self):
+        return self.spellings.count()
+
+    def get_blank_page_count(self):
+        return self.blank_page.count()
