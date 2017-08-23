@@ -7,3 +7,5 @@ env/pip-selfcheck.json
 env/selenium/
 spider.pyc
 env/
+*.pdf
+*.log
