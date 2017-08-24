@@ -9,10 +9,17 @@ from utility.spell_checker import *
 
 class URLOpenWrapper:
     def __init__(self, page_url):
+        user_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
         self._page_url = page_url
         try:
             gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-            self._response = urllib.request.urlopen(page_url, context=gcontext)
+            request = urllib.request.Request(
+                self._page_url,
+                headers={
+                    'User-Agent': user_agent
+                }
+            )
+            self._response = urllib.request.urlopen(request, context=gcontext)
             self._response_code = self._response.getcode()
         except HTTPError as e:
             Logger.logger.error('The server couldn\'t fulfill the request.')
@@ -50,5 +57,6 @@ class URLOpenWrapper:
 
     def is_successful_response(self):
         return True if self._response_code in successResponse else False
+
 
 successResponse = [200, 201, 202, 203, 204, 205, 206]
