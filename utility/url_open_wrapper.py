@@ -41,3 +41,8 @@ class URLOpenWrapper:
 
     def get_size(self):
         return len(self._response.read())
+
+    def is_successful_response(self):
+        return True if self._response_code in successResponse else False
+
+successResponse = [200, 201, 202, 203, 204, 205, 206]

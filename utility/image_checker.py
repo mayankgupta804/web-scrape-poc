@@ -29,11 +29,11 @@ class ImageChecker(Thread):
                 link = queue.get()
                 resp = URLOpenWrapper(link)
                 status = resp.get_status_code()
-                if status == 200:
+                if resp.is_successful_response():
                     if resp.get_size() == 0:
-                        self.mongod.add_image_links_to_missing_images(link, status, responses.responses[status])
+                        self.mongod.add_image_links_to_missing_images(link, status, "Image is missing")
                         ImageChecker.count += 1
-                elif status != 200:
+                else:
                     self.mongod.add_image_links_to_missing_images(link, status, responses.responses[status])
                     ImageChecker.count += 1
                 if ImageChecker.count > 0:
@@ -41,3 +41,5 @@ class ImageChecker(Thread):
                 queue.task_done()
         except EOFError as e:
             Logger.logger.info("Image checker EOFError : " + str(e))
+
+

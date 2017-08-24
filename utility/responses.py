@@ -1,5 +1,4 @@
 responses = {
-    0: ('Error', 'We failed to reach a server.'),
     100: ('Continue', 'Request received, please continue'),
     101: ('Switching Protocols',
           'Switching to new protocol; obey Upgrade header'),
