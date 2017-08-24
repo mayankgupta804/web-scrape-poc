@@ -2,6 +2,7 @@ from multiprocessing import JoinableQueue
 from threading import Thread
 
 from utility import responses
+from utility.logger import Logger
 from utility.url_open_wrapper import URLOpenWrapper
 
 queue = JoinableQueue()
@@ -23,20 +24,20 @@ class ImageChecker(Thread):
 
     def run(self):
 
-        while True:
-            # try:
-            link = queue.get()
-            resp = URLOpenWrapper(link)
-            status = resp.get_status_code()
-            if status == 200:
-                if resp.get_size() == 0:
+        try:
+            while True:
+                link = queue.get()
+                resp = URLOpenWrapper(link)
+                status = resp.get_status_code()
+                if status == 200:
+                    if resp.get_size() == 0:
+                        self.mongod.add_image_links_to_missing_images(link, status, responses.responses[status])
+                        ImageChecker.count += 1
+                elif status != 200:
                     self.mongod.add_image_links_to_missing_images(link, status, responses.responses[status])
                     ImageChecker.count += 1
-            elif status != 200:
-                self.mongod.add_image_links_to_missing_images(link, status, responses.responses[status])
-                ImageChecker.count += 1
-            if ImageChecker.count > 0:
-                print('Broken Images : ', ImageChecker.count)
-            queue.task_done()
-            # except:
-            #     pass
+                if ImageChecker.count > 0:
+                    print('Broken Images : ', ImageChecker.count)
+                queue.task_done()
+        except EOFError as e:
+            Logger.logger.info("Image checker EOFError : " + str(e))
