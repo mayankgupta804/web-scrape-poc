@@ -18,12 +18,12 @@ class MongoWriter:
         self.urls.insert_many(posts)
 
     def write_url_to_db(self, link, depth, status):
-        self.urls.insert_one({"url": link, "depth": depth, "response_code": status})
+        self.urls.insert_one({"url": link.url, "clean_url": link.clean_url, "depth": depth, "response_code": status})
 
-    def add_word_to_dictionary(self, dict):
-        self.spellings.update({"word": dict['word']}, {"word": dict['word']}, upsert=True)
-        self.spellings.update({"word": dict['word']},
-                              {'$push': {"info": {"count": dict['count'], "url": dict['url']}}})
+    def add_word_to_dictionary(self, word_dict):
+        self.spellings.update({"word": word_dict['word']}, {"word": word_dict['word']}, upsert=True)
+        self.spellings.update({"word": word_dict['word']},
+                              {'$push': {"info": {"count": word_dict['count'], "url": word_dict['url']}}})
 
     def add_links_to_blank_page(self, url):
         self.blank_page.insert({"url": url})

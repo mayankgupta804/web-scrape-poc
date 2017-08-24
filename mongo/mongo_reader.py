@@ -11,7 +11,7 @@ class MongoReader:
         self.blank_page = self.documents[Constants.BLANK_PAGE_DOCUMENT]
 
     def is_url_crawled(self, url):
-        if self.urls.find_one({"url": url}) is None:
+        if self.urls.find_one({"clean_url": url}) is None:
             return False
         else:
             return True

@@ -22,6 +22,9 @@ class URLOpenWrapper:
             Logger.logger.error('We failed to reach a server.')
             Logger.logger.error('Reason: ' + str(e.reason))
             self._response_code = 0
+        except ValueError as e:
+            Logger.logger.error("Value error : " + self._page_url)
+            Logger.logger.error("Reason : " + str(e))
 
     def get_page_source(self):
         if 'text/html' in self._response.headers('Content-Type'):

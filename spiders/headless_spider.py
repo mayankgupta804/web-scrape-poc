@@ -5,6 +5,7 @@ from utility.driver_wrapper import WebDriverWrapper
 from utility.image_checker import *
 from utility.logger import Logger
 from utility.spell_checker import CheckWords
+from utility.url import Url
 
 
 class HeadlessSpider(Spider):
@@ -18,7 +19,7 @@ class HeadlessSpider(Spider):
         HeadlessSpider.device = Properties.device
         HeadlessSpider.image_check = Properties.image_check
         HeadlessSpider.spell_check = Properties.spell_check
-        self.crawl_page('First spider', Spider.base_url, 0, get_rabbit_mq_channel())
+        self.crawl_page('First spider', Url(Spider.base_url), 0, get_rabbit_mq_channel())
         if self.image_check:
             ImageChecker(mongod).start()
         if self.spell_check:
@@ -33,8 +34,8 @@ class HeadlessSpider(Spider):
         Logger.logger.info("gathering links " + page_url)
         try:
             with WebDriverWrapper(page_url, cls.device, cls.mongod) as driver:
-                links = driver.get_all_links()
-                img_links = driver.get_image_links()
+                links = set(driver.get_all_links())
+                img_links = set(driver.get_image_links())
                 driver.is_blank_page()
                 driver.add_words_to_queue()
         except Exception as e:
