@@ -26,6 +26,12 @@ class URLOpenWrapper:
             Logger.logger.error("Value error : " + self._page_url)
             Logger.logger.error("Reason : " + str(e))
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
     def get_page_source(self):
         if 'text/html' in self._response.headers('Content-Type'):
             html_bytes = self._response.raw()

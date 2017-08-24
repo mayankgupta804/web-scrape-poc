@@ -1,4 +1,5 @@
 from mongo.constants import Constants
+from utility.responses import responses
 
 
 class MongoWriter:
@@ -6,7 +7,7 @@ class MongoWriter:
         self.documents = documents
         self.urls = self.documents[Constants.CRAWLED_DOCUMENT]
         self.images = self.documents[Constants.MISSING_IMAGES_DOCUMENT]
-        self.links = self.documents[Constants.BROKEN_LINKS_DOCUMENT]
+        self.broken_links = self.documents[Constants.BROKEN_LINKS_DOCUMENT]
         self.spellings = self.documents[Constants.SPELLINGS_DOCUMENT]
         self.blank_page = self.documents[Constants.BLANK_PAGE_DOCUMENT]
 
@@ -30,3 +31,6 @@ class MongoWriter:
 
     def add_image_links_to_missing_images(self, url, status, status_info):
         self.images.insert({"url": url, "status": status, "status_info": status_info})
+
+    def add_to_broken_links(self, url, status):
+        self.broken_links.insert_one({"url": url, "status_code": status, "status": responses[status]})

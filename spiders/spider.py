@@ -3,12 +3,10 @@ from abc import abstractmethod
 import pika
 
 from config.properties import Properties
-from rabbitmq.connect import get_rabbit_mq_channel
 from utility.domain_extractor import *
 from utility.logger import Logger
+from utility.responses import responses
 from utility.url import Url
-from utility.utilities import *
-
 from utility.url_open_wrapper import URLOpenWrapper
 
 
@@ -48,20 +46,14 @@ class Spider:
     @classmethod
     def crawl_page(cls, thread_name, page_url, depth, channel):
         if not cls.mongod.is_url_crawled(page_url.clean_url):
-            print(thread_name + ' now crawling ' + page_url.url)
-            print('Queue : ' + str(len(Spider.queue)) + ' | Crawled : ' + str(len(Spider.crawled)) +
-                  ' | Depth : ' + str(depth) + ' | Broken Links : ' + str(len(Spider.broken_links)))
-            if depth <= cls.max_depth:
-                cls.add_links_to_queue(cls.gather_links(page_url.url), depth, channel, thread_name)
-            status = cls.check_link_status(page_url.clean_url)
-            cls.mongod.write_url_to_db(page_url, depth, status)
-
-    @classmethod
-    def check_link_status(cls, page_info):
-        status = URLOpenWrapper(page_info).get_status_code()
-        if status in Spider.request:
-            cls.broken_links.add((str(status), Spider.request[status], page_info))
-        return status
+            with URLOpenWrapper(page_url.clean_url) as page_status:
+                if page_status.is_successful_response():
+                    print(thread_name + ' now crawling ' + page_url.url)
+                    if depth <= cls.max_depth:
+                        cls.add_links_to_queue(cls.gather_links(page_url.url), depth, channel, thread_name)
+                else:
+                    cls.mongod.add_to_broken_links(page_url.url, page_status.get_status_code())
+                cls.mongod.write_url_to_db(page_url, depth, page_status.get_status_code())
 
     # Converts raw response data into readable information and checks for proper html formatting
     @abstractmethod
