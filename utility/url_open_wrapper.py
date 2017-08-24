@@ -1,3 +1,4 @@
+import ssl
 import urllib.request
 from urllib.error import HTTPError, URLError
 
@@ -10,7 +11,8 @@ class URLOpenWrapper:
     def __init__(self, page_url):
         self._page_url = page_url
         try:
-            self._response = urllib.request.urlopen(page_url)
+            gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+            self._response = urllib.request.urlopen(page_url, context=gcontext)
             self._response_code = self._response.getcode()
         except HTTPError as e:
             Logger.logger.error('The server couldn\'t fulfill the request.')
