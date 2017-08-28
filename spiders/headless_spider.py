@@ -1,6 +1,7 @@
 from config.properties import Properties
 from rabbitmq.connect import get_rabbit_mq_channel
 from spiders.spider import Spider
+from utility.counter import Counter
 from utility.driver_wrapper import WebDriverWrapper
 from utility.image_checker import *
 from utility.logger import Logger
@@ -20,14 +21,11 @@ class HeadlessSpider(Spider):
         HeadlessSpider.image_check = Properties.image_check
         HeadlessSpider.spell_check = Properties.spell_check
         self.crawl_page('First spider', Url(Spider.base_url), 0, get_rabbit_mq_channel())
+        Counter.url += 1
         if self.image_check:
             ImageChecker(mongod).start()
         if self.spell_check:
             CheckWords(Spider.spelling_file, mongod).start()
-
-    @classmethod
-    def crawl_page(cls, thread_name, page_url, depth, channel):
-        super().crawl_page(thread_name, page_url, depth, channel)
 
     @classmethod
     def gather_links(cls, page_url):
@@ -45,7 +43,3 @@ class HeadlessSpider(Spider):
         if cls.image_check:
             add_images_to_queue(img_links)
         return links
-
-    @classmethod
-    def add_links_to_queue(cls, links, depth, channel, thread_name):
-        super().add_links_to_queue(links, depth, channel, thread_name)

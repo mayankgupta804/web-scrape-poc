@@ -5,6 +5,7 @@ from threading import Thread
 import enchant
 from enchant.tokenize import get_tokenizer
 
+from utility.counter import Counter
 from utility.logger import Logger
 from utility.utilities import ignored
 
@@ -43,5 +44,6 @@ class CheckWords(Thread):
                     if not chkr.check(word_dict['word']):
                         self.mongod.add_word_to_dictionary(word_dict)
                 q.task_done()
+                Counter.total_spellings += 1
         except EOFError as e:
             Logger.logger.info("Spell checker EOFError : " + str(e))

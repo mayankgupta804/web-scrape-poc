@@ -4,6 +4,7 @@ from reportlab.platypus import SimpleDocTemplate
 
 from config.properties import Properties
 from report.reportTable import ReportTable
+from utility.counter import Counter
 
 
 class Report:
@@ -15,18 +16,10 @@ class Report:
         self.elements = []
 
     def create_header_table(self):
-        data = self.get_header_data()
-        header_table = ReportTable(data).create_table()
-        self.elements.append(header_table)
-        data = self.mongod.get_all_spellings()
-        spellings_table = ReportTable(data).create_table()
-        self.elements.append(spellings_table)
-        data = self.mongod.get_all_broken_links()
-        broken_links_table = ReportTable(data).create_table()
-        self.elements.append(broken_links_table)
-        data = self.mongod.get_all_missing_images()
-        missing_images_table = ReportTable(data).create_table()
-        self.elements.append(missing_images_table)
+        self.elements.append(self.get_header_table())
+        self.elements.append(self.get_spelling_table())
+        self.elements.append(self.get_broken_links_table())
+        self.elements.append(self.get_missing_image_table())
         self.doc.build(self.elements)
 
     def get_header_data(self):
@@ -34,5 +27,22 @@ class Report:
         spellings_count = self.mongod.get_spellings_count()
         data = [["Base Url", Properties.home_page],
                 ["No of crawled Urls", str(crawled_urls_count)],
-                ["No of Spelling Mistakes", str(spellings_count)]]
+                ["No of Spelling Mistakes", str(spellings_count) + "/" + Counter.total_spellings]
+                ]
         return data
+
+    def get_header_table(self):
+        data = self.get_header_data()
+        return ReportTable(data).create_table()
+
+    def get_spelling_table(self):
+        data = self.mongod.get_all_spellings()
+        return ReportTable(data).create_table() if len(data) > 0 else None
+
+    def get_broken_links_table(self):
+        data = self.mongod.get_all_broken_links()
+        return ReportTable(data).create_table() if len(data) > 0 else None
+
+    def get_missing_image_table(self):
+        data = self.mongod.get_all_missing_images()
+        return ReportTable(data).create_table() if len(data) > 0 else None

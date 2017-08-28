@@ -50,7 +50,8 @@ class Spider:
                 if page_status.is_successful_response():
                     print(thread_name + ' now crawling ' + page_url.url)
                     if depth <= cls.max_depth:
-                        cls.add_links_to_queue(cls.gather_links(page_url.url), depth, channel, thread_name)
+                        cls.add_links_to_queue(cls.gather_links(page_url.url), depth, channel, thread_name,
+                                               page_url.url)
                 else:
                     cls.mongod.add_to_broken_links(page_url.url, page_status.get_status_code())
                 cls.mongod.write_url_to_db(page_url, depth, page_status.get_status_code())
@@ -62,7 +63,7 @@ class Spider:
 
     # Saves queue data to project files
     @classmethod
-    def add_links_to_queue(cls, links, depth, channel, thread_name):
+    def add_links_to_queue(cls, links, depth, channel, thread_name, parent_url):
         Logger.logger.info(thread_name + " adding " + str(len(links)) + " links to queue.")
         for link in links:
             url = Url(link)
@@ -74,5 +75,7 @@ class Spider:
                                       body=str(url),
                                       properties=pika.BasicProperties(
                                           delivery_mode=2,  # make message persistent
-                                          headers={'depth': depth + 1}
+                                          headers={'depth': depth + 1,
+                                                   'parent': parent_url
+                                                   }
                                       ))

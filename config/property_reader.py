@@ -45,4 +45,4 @@ class PropertyReader:
 
     @property
     def device(self):
-        return self._p.get("PROPERTIES", "device")
+        return self._p.get("PROPERTIES", "device", fallback=None)

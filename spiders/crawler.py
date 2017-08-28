@@ -3,6 +3,7 @@ from threading import Thread
 
 from rabbitmq.connect import get_rabbit_mq_channel
 from spiders.headless_spider import HeadlessSpider
+from utility.counter import Counter
 from utility.logger import Logger
 from utility.url import Url
 
@@ -29,6 +30,7 @@ class Crawler(Thread):
                 Logger.logger.info(self.getName() + " processing " + str(url))
                 HeadlessSpider.crawl_page(self.getName(), url, header_frame.headers['depth'], self._channel)
                 self._channel.basic_ack(method_frame.delivery_tag)
+                Counter.url += 1
                 Logger.logger.info(self.getName() + " finished processing " + str(url))
             else:
                 time.sleep(10)
