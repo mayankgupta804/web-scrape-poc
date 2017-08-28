@@ -30,7 +30,7 @@ class MongoWriter:
         self.blank_page.insert({"url": url})
 
     def add_image_links_to_missing_images(self, url, status, status_info):
-        self.images.insert({"url": url, "status": status, "status_info": status_info})
+        self.images.insert({"url": url, "status_code": status, "status": status_info})
 
     def add_to_broken_links(self, url, status):
         self.broken_links.insert_one({"url": url, "status_code": status, "status": responses[status]})

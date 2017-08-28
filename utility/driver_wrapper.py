@@ -53,5 +53,7 @@ class WebDriverWrapper:
         links = []
         elems = self._driver.find_elements_by_xpath("//img[@src]")
         for elem in elems:
-            links.append(elem.get_attribute("src"))
+            link = elem.get_attribute("src")
+            if not link.startswith("data:image/svg"):
+                links.append(link)
         return links

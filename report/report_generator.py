@@ -21,6 +21,12 @@ class Report:
         data = self.mongod.get_all_spellings()
         spellings_table = ReportTable(data).create_table()
         self.elements.append(spellings_table)
+        data = self.mongod.get_all_broken_links()
+        broken_links_table = ReportTable(data).create_table()
+        self.elements.append(broken_links_table)
+        data = self.mongod.get_all_missing_images()
+        missing_images_table = ReportTable(data).create_table()
+        self.elements.append(missing_images_table)
         self.doc.build(self.elements)
 
     def get_header_data(self):
@@ -30,4 +36,3 @@ class Report:
                 ["No of crawled Urls", str(crawled_urls_count)],
                 ["No of Spelling Mistakes", str(spellings_count)]]
         return data
-

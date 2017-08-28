@@ -1,5 +1,6 @@
 import ssl
 import urllib.request
+from _ssl import SSLError
 from urllib.error import HTTPError, URLError
 
 import nltk
@@ -8,15 +9,18 @@ from utility.spell_checker import *
 
 
 class URLOpenWrapper:
+    user_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+
     def __init__(self, page_url):
-        user_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
         self._page_url = page_url
+
+    def __enter__(self):
         try:
             gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
             request = urllib.request.Request(
                 self._page_url,
                 headers={
-                    'User-Agent': user_agent
+                    'User-Agent': self.user_agent
                 }
             )
             self._response = urllib.request.urlopen(request, context=gcontext)
@@ -32,8 +36,9 @@ class URLOpenWrapper:
         except ValueError as e:
             Logger.logger.error("Value error : " + self._page_url)
             Logger.logger.error("Reason : " + str(e))
-
-    def __enter__(self):
+        except SSLError as e:
+            Logger.logger.error("SSL Error : " + self._page_url)
+            Logger.logger.error("Reason : " + str(e))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

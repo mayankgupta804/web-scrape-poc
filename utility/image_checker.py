@@ -31,11 +31,14 @@ class ImageChecker(Thread):
                     if resp.is_successful_response():
                         if resp.get_size() == 0:
                             self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
-                                                                          "Image is missing")
+                                                                          ('0', "Image is missing"))
                             ImageChecker.count += 1
                     else:
-                        self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
-                                                                      responses.responses[resp.get_status_code()])
+                        try:
+                            self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
+                                                                          responses.responses[resp.get_status_code()])
+                        except KeyError as e:
+                            Logger.logger.info("Key error : " + resp.get_status_code())
                         ImageChecker.count += 1
                     if ImageChecker.count > 0:
                         print('Broken Images : ', ImageChecker.count)
