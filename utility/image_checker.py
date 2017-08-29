@@ -21,7 +21,6 @@ class ImageChecker(Thread):
         Thread.__init__(self)
         self.mongod = mongod
         self.daemon = True
-        ImageChecker.count = 0
 
     def run(self):
 
@@ -33,7 +32,6 @@ class ImageChecker(Thread):
                         if resp.get_size() == 0:
                             self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
                                                                           ('0', "Image is missing"))
-                            Counter.missing_images += 1
                     else:
                         try:
                             self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
@@ -41,9 +39,6 @@ class ImageChecker(Thread):
                         except KeyError as e:
                             Logger.logger.error("Key error : " + link)
                             Logger.logger.error(str(e))
-                        Counter.missing_images += 1
-                    if ImageChecker.count > 0:
-                        print('Broken Images : ', ImageChecker.count)
                 queue.task_done()
                 Counter.total_images += 1
         except EOFError as e:
