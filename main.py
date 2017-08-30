@@ -2,6 +2,7 @@ import sys
 
 from config.properties import Properties
 from mongo.mongodb import MongoDB
+from report.excel_report_generator import ExcelReport
 from report.report_generator import Report
 from spiders.crawler import Crawler
 from spiders.headless_spider import HeadlessSpider
@@ -35,4 +36,5 @@ create_workers()
 for thread in threads:
     thread.join()
 
-Report(mongod).create_header_table()
+ExcelReport(mongod).create_workbook()
+# Report(mongod).create_header_table()

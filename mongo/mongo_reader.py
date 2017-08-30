@@ -40,19 +40,19 @@ class MongoReader:
                 if i is 0:
                     data.append([word, str(item["count"]), item["url"]])
                 else:
-                    data.append({"", str(item["count"]), item["url"]})
+                    data.append(["", str(item["count"]), item["url"]])
         return data
 
     def get_all_broken_links(self):
         data = []
         broken_links = list(self.broken_links.find())
         for link in broken_links:
-            data.append({link['url'], str(link['status_code']), ','.join(link['status'])})
+            data.append([link['url'], str(link['status_code']), ','.join(link['status'])])
         return data
 
     def get_all_missing_images(self):
         data = []
         missing_images = list(self.images.find())
         for link in missing_images:
-            data.append({link['url'], str(link['status_code']), ','.join(link['status'])})
+            data.append([link['url'], str(link['status_code']), ','.join(link['status'])])
         return data

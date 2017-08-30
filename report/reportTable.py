@@ -5,13 +5,13 @@ from reportlab.platypus.tables import Table
 
 
 class ReportTable:
-    def __init__(self,data):
+    def __init__(self, data):
         self.data = data
 
     def create_table(self):
         s = ReportTable.get_style_sheet()
         data2 = [[Paragraph(cell, s) for cell in row] for row in self.data]
-        t = Table(data2)
+        t = Table(data2, colWidths=[250, 250], splitByRow=1)
         t.setStyle(ReportTable.get_default_table_style())
         return t
 
@@ -32,5 +32,5 @@ class ReportTable:
     def get_style_sheet():
         s = getSampleStyleSheet()
         s = s["BodyText"]
-        s.wordWrap = 'CJK'
+        # s.wordWrap = 'CJK'
         return s

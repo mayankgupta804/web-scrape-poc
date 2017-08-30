@@ -71,7 +71,7 @@ class Spider:
                 continue
             if depth < cls.max_depth:
                 channel.basic_publish(exchange='',
-                                      routing_key='task_queue',
+                                      routing_key='links_queue',
                                       body=str(url),
                                       properties=pika.BasicProperties(
                                           delivery_mode=2,  # make message persistent

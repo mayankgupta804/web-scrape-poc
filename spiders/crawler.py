@@ -23,7 +23,7 @@ class Crawler(Thread):
     def run(self):
         counter = 0
         while counter < 3:
-            method_frame, header_frame, body = self._channel.basic_get('task_queue')
+            method_frame, header_frame, body = self._channel.basic_get('links_queue')
             if method_frame:
                 counter = 0
                 url = Url(body.decode("utf-8"))

@@ -36,9 +36,15 @@ class URLOpenWrapper:
         except ValueError as e:
             Logger.logger.error("Value error : " + self._page_url)
             Logger.logger.error("Reason : " + str(e))
+            self._response_code = 0
         except SSLError as e:
             Logger.logger.error("SSL Error : " + self._page_url)
             Logger.logger.error("Reason : " + str(e))
+            self._response_code = 0
+        except UnicodeEncodeError as e:
+            Logger.logger.error("Unicode Error : " + str(e))
+            Logger.logger.error("Reason : " + str(e))
+            self._response_code = 0
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

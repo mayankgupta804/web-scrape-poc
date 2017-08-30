@@ -28,10 +28,12 @@ class Report:
 
     def get_header_data(self):
         crawled_urls_count = self.mongod.get_crawled_urls_count()
+        missing_images_count = self.mongod.get_missing_images_count()
         spellings_count = self.mongod.get_spellings_count()
         data = [["Base Url", Properties.home_page],
                 ["No of crawled Urls", str(crawled_urls_count)],
-                ["No of Spelling Mistakes", str(spellings_count) + "/" + str(Counter.total_spellings)]
+                ["No of Spelling Mistakes", str(spellings_count) + "/" + str(Counter.total_spellings)],
+                ["No of Missing Images", str(missing_images_count) + "/" + str(Counter.total_images)]
                 ]
         return data
 
@@ -51,5 +53,5 @@ class Report:
 
     def get_missing_image_table(self):
         data = [["Url", "Status Code", "Status"]] + \
-            self.mongod.get_all_missing_images()
+               self.mongod.get_all_missing_images()
         return ReportTable(data).create_table() if len(data) > 0 else None

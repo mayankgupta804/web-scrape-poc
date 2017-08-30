@@ -47,7 +47,7 @@ class WebDriverWrapper:
         elems = self._driver.find_elements_by_xpath("//a[@href]")
         for elem in elems:
             links.append(elem.get_attribute("href"))
-        return links
+        return filter(None, links)
 
     def get_image_links(self):
         links = []
@@ -56,4 +56,4 @@ class WebDriverWrapper:
             link = elem.get_attribute("src")
             if not link.startswith("data:image/svg"):
                 links.append(link)
-        return links
+        return filter(None, links)
