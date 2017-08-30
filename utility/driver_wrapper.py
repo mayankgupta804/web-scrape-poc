@@ -46,7 +46,10 @@ class WebDriverWrapper:
         links = []
         elems = self._driver.find_elements_by_xpath("//a[@href]")
         for elem in elems:
-            links.append(elem.get_attribute("href"))
+            try:
+                links.append(elem.get_attribute("href"))
+            except Exception as e:
+                Logger.logger.error(str(e))
         return filter(None, links)
 
     def get_image_links(self):

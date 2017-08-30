@@ -41,8 +41,8 @@ class URLOpenWrapper:
             Logger.logger.error("SSL Error : " + self._page_url)
             Logger.logger.error("Reason : " + str(e))
             self._response_code = 0
-        except UnicodeEncodeError as e:
-            Logger.logger.error("Unicode Error : " + str(e))
+        except Exception as e:
+            Logger.logger.error("Unknown Error : " + str(e))
             Logger.logger.error("Reason : " + str(e))
             self._response_code = 0
         return self

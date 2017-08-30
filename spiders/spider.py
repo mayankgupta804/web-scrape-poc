@@ -1,12 +1,7 @@
 from abc import abstractmethod
 
-import pika
-
 from config.properties import Properties
-from utility.domain_extractor import *
-from utility.logger import Logger
-from utility.responses import responses
-from utility.url import Url
+from rabbitmq.writer_queue import add_links_to_queue
 from utility.url_open_wrapper import URLOpenWrapper
 
 
@@ -50,8 +45,8 @@ class Spider:
                 if page_status.is_successful_response():
                     print(thread_name + ' now crawling ' + page_url.url)
                     if depth <= cls.max_depth:
-                        cls.add_links_to_queue(cls.gather_links(page_url.url), depth, channel, thread_name,
-                                               page_url.url)
+                        add_links_to_queue(cls.gather_links(page_url.url), depth, thread_name, page_url.url,
+                                           cls.domain_name)
                 else:
                     cls.mongod.add_to_broken_links(page_url.url, page_status.get_status_code())
                 cls.mongod.write_url_to_db(page_url, depth, page_status.get_status_code())
@@ -60,22 +55,3 @@ class Spider:
     @abstractmethod
     def gather_links(self, page_url):
         raise NotImplementedError
-
-    # Saves queue data to project files
-    @classmethod
-    def add_links_to_queue(cls, links, depth, channel, thread_name, parent_url):
-        Logger.logger.info(thread_name + " adding " + str(len(links)) + " links to queue.")
-        for link in links:
-            url = Url(link)
-            if cls.domain_name != get_domain_name(str(url)):
-                continue
-            if depth < cls.max_depth:
-                channel.basic_publish(exchange='',
-                                      routing_key='links_queue',
-                                      body=str(url),
-                                      properties=pika.BasicProperties(
-                                          delivery_mode=2,  # make message persistent
-                                          headers={'depth': depth + 1,
-                                                   'parent': parent_url
-                                                   }
-                                      ))

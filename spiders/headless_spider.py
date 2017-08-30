@@ -1,5 +1,6 @@
 from config.properties import Properties
 from rabbitmq.connect import get_rabbit_mq_channel
+from rabbitmq.writer_queue import WriterQueue
 from spiders.spider import Spider
 from utility.counter import Counter
 from utility.driver_wrapper import WebDriverWrapper
@@ -26,6 +27,7 @@ class HeadlessSpider(Spider):
             ImageChecker(mongod).start()
         if self.spell_check:
             CheckWords(Spider.spelling_file, mongod).start()
+        WriterQueue().start()
 
     @classmethod
     def gather_links(cls, page_url):

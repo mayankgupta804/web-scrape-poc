@@ -1,6 +1,8 @@
 import time
 from threading import Thread
 
+from pika.exceptions import ConnectionClosed
+
 from rabbitmq.connect import get_rabbit_mq_channel
 from spiders.headless_spider import HeadlessSpider
 from utility.counter import Counter
@@ -23,7 +25,7 @@ class Crawler(Thread):
     def run(self):
         counter = 0
         while counter < 3:
-            method_frame, header_frame, body = self._channel.basic_get('links_queue')
+            method_frame, header_frame, body = self.get_task()
             if method_frame:
                 counter = 0
                 url = Url(body.decode("utf-8"))
@@ -36,3 +38,12 @@ class Crawler(Thread):
                 time.sleep(10)
                 counter += 1
         Logger.logger.info("exiting thread : " + self.getName())
+
+    def get_task(self):
+        try:
+            return self._channel.basic_get('links_queue')
+        except ConnectionClosed as e:
+            Logger.logger.error(str(e))
+            self._channel = get_rabbit_mq_channel()
+            self._channel.basic_qos(prefetch_count=1)
+            return self._channel.basic_get('links_queue')
