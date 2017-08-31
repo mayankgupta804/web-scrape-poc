@@ -3,6 +3,7 @@ from threading import Thread
 from multiprocessing import JoinableQueue
 
 import pika
+from pika.exceptions import ConnectionClosed
 
 from config.properties import Properties
 from rabbitmq.connect import get_rabbit_mq_channel
@@ -34,14 +35,21 @@ class WriterQueue(Thread):
             # channel.basic_qos(prefetch_count=1)
             while True:
                 data = q.get()
-                channel.basic_publish(exchange='',
-                                      routing_key='links_queue',
-                                      body=data[0],
-                                      properties=pika.BasicProperties(
-                                          delivery_mode=2,  # make message persistent
-                                          headers={'depth': data[1],
-                                                   'parent': data[2]
-                                                   }
-                                      ))
+                while True:
+                    try:
+                        channel.basic_publish(exchange='',
+                                              routing_key='links_queue',
+                                              body=data[0],
+                                              properties=pika.BasicProperties(
+                                                  delivery_mode=2,  # make message persistent
+                                                  headers={'depth': data[1],
+                                                           'parent': data[2]
+                                                           }
+                                              ))
+                        break
+                    except ConnectionClosed as e:
+                        Logger.logger.error(str(e))
+                        channel = get_rabbit_mq_channel()
+
         except EOFError as e:
             Logger.logger.info("Spell checker EOFError : " + str(e))
