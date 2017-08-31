@@ -1,6 +1,7 @@
 from openpyxl import Workbook
 
 from config.properties import Properties
+from mongo.mongodb import MongoDB
 from utility.counter import Counter
 
 
@@ -50,3 +51,8 @@ class ExcelReport:
                self.mongod.get_all_spellings()
         for row in data:
             ws.append(row)
+
+
+if __name__ == "__main__":
+    mongod = MongoDB().open("Crawler1504075609")
+    ExcelReport(mongod).create_workbook()

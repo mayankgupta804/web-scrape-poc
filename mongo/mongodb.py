@@ -15,3 +15,8 @@ class MongoDB(MongoReader, MongoWriter):
 
         self.db = self.client["Crawler" + str(int(time.time()))]
         super().__init__(self.db)
+
+    def open(self, db):
+        self.db = self.client[db]
+        super().__init__(self.db)
+        return self
