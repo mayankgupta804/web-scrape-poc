@@ -9,7 +9,7 @@ from utility.counter import Counter
 from utility.logger import Logger
 from utility.utilities import ignored
 
-q = JoinableQueue(10000)
+q = JoinableQueue()
 
 
 def add_words_to_queue(page_contents, url):

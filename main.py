@@ -1,15 +1,14 @@
-import sys
-
 from config.properties import Properties
 from mongo.mongodb import MongoDB
 from report.excel_report_generator import ExcelReport
-from report.report_generator import Report
 from spiders.crawler import Crawler
 from spiders.headless_spider import HeadlessSpider
 from spiders.requesting_spider import RequestingSpider
 from utility.domain_extractor import get_domain_name
 from utility.logger import Logger
 
+
+Logger.logger.info("starting...")
 HOMEPAGE = Properties.home_page
 MODE = Properties.mode
 DOMAIN_NAME = get_domain_name(HOMEPAGE)

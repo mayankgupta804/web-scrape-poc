@@ -10,7 +10,7 @@ from utility.domain_extractor import get_domain_name
 from utility.logger import Logger
 from utility.url import Url
 
-q = JoinableQueue(10000)
+q = JoinableQueue()
 
 
 def add_links_to_queue(links, depth, thread_name, parent_url, domain_name):

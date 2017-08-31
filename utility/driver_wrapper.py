@@ -1,6 +1,7 @@
 import os
 
 from selenium import webdriver
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.chrome.options import Options
 
 from data.devices import device_mappings
@@ -48,7 +49,7 @@ class WebDriverWrapper:
         for elem in elems:
             try:
                 links.append(elem.get_attribute("href"))
-            except Exception as e:
+            except (StaleElementReferenceException, TimeoutException) as e:
                 Logger.logger.error(str(e))
         return filter(None, links)
 
@@ -60,6 +61,6 @@ class WebDriverWrapper:
                 link = elem.get_attribute("src")
                 if not link.startswith("data:image/svg"):
                     links.append(link)
-            except Exception as e:
+            except (StaleElementReferenceException, TimeoutException) as e:
                 Logger.logger.error(str(e))
         return filter(None, links)
