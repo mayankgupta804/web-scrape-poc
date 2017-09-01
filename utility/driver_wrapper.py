@@ -1,9 +1,11 @@
 import os
+from urllib.parse import urljoin
 
+from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.chrome.options import Options
 
+from config.properties import Properties
 from data.devices import device_mappings
 from utility.spell_checker import *
 
@@ -24,13 +26,14 @@ class WebDriverWrapper:
     def __enter__(self):
         Logger.logger.info("opening with webdriver " + self._page_url)
         self._driver.get(self._page_url)
+        self.page_source = self._driver.page_source
         return self
 
     def __exit__(self, *args):
-        self._driver.close()
+        self._driver.quit()
 
     def get_page_source(self):
-        return self._driver.page_source
+        return self.page_source
 
     def save_screenshot(self):
         return self._driver.save_screenshot(os.path.abspath(self._page_url + ".png"))
@@ -44,23 +47,17 @@ class WebDriverWrapper:
             self.mongod.add_links_to_blank_page(self._page_url)
 
     def get_all_links(self):
+        soup = BeautifulSoup(self.page_source, "html.parser")
         links = []
-        elems = self._driver.find_elements_by_xpath("//a[@href]")
-        for elem in elems:
-            try:
-                links.append(elem.get_attribute("href"))
-            except (StaleElementReferenceException, TimeoutException) as e:
-                Logger.logger.error(str(e))
+        for link in soup.findAll('a'):
+            links.append(urljoin(Properties.home_page, link.get('href')))
         return filter(None, links)
 
     def get_image_links(self):
+        soup = BeautifulSoup(self.page_source, "html.parser")
         links = []
-        elems = self._driver.find_elements_by_xpath("//img[@src]")
-        for elem in elems:
-            try:
-                link = elem.get_attribute("src")
-                if not link.startswith("data:image/svg"):
-                    links.append(link)
-            except (StaleElementReferenceException, TimeoutException) as e:
-                Logger.logger.error(str(e))
-        return filter(None, links)
+        for img in soup.findAll('img'):
+            link = img.get('src')
+            if link and not link.startswith("data:image/svg"):
+                links.append(urljoin(Properties.home_page, img.get('src')))
+        return links
