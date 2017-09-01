@@ -27,18 +27,22 @@ class ImageChecker(Thread):
         try:
             while True:
                 link = queue.get()
-                with URLOpenWrapper(link) as resp:
-                    if resp.is_successful_response():
-                        if resp.get_size() == 0:
-                            self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
-                                                                          ('0', "Image is missing"))
-                    else:
-                        try:
-                            self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
-                                                                          responses.responses[resp.get_status_code()])
-                        except KeyError as e:
-                            Logger.logger.error("Key error : " + link)
-                            Logger.logger.error(str(e))
+                try:
+                    with URLOpenWrapper(link) as resp:
+                        if resp.is_successful_response():
+                            if resp.get_size() == 0:
+                                self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
+                                                                              ('0', "Image is missing"))
+                        else:
+                            try:
+                                self.mongod.add_image_links_to_missing_images(link, resp.get_status_code(),
+                                                                              responses.responses[
+                                                                                  resp.get_status_code()])
+                            except KeyError as e:
+                                Logger.logger.error("Key error : " + link)
+                                Logger.logger.error(str(e))
+                except UnicodeEncodeError as e:
+                    Logger.logger.error(str(e))
                 queue.task_done()
                 Counter.total_images += 1
         except EOFError as e:

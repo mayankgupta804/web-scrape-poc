@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 from config.properties import Properties
 from rabbitmq.writer_queue import add_links_to_queue
+from utility.logger import Logger
 from utility.url_open_wrapper import URLOpenWrapper
 
 
@@ -41,15 +42,21 @@ class Spider:
     @classmethod
     def crawl_page(cls, thread_name, page_url, depth, channel):
         if not cls.mongod.is_url_crawled(page_url.clean_url):
-            with URLOpenWrapper(page_url.clean_url) as page_status:
-                if page_status.is_successful_response():
-                    print(thread_name + ' now crawling ' + page_url.url)
-                    if depth <= cls.max_depth:
-                        add_links_to_queue(cls.gather_links(page_url.url), depth, thread_name, page_url.url,
+            try:
+                with URLOpenWrapper(page_url.clean_url) as page_status:
+                    if page_status.is_successful_response():
+                        print(thread_name + ' now crawling ' + page_url.url)
+                        if depth <= cls.max_depth:
+                            add_links_to_queue(cls.gather_links(page_url.url), depth, thread_name, page_url.url,
                                            cls.domain_name)
-                else:
-                    cls.mongod.add_to_broken_links(page_url.url, page_status.get_status_code())
-                cls.mongod.write_url_to_db(page_url, depth, page_status.get_status_code())
+                    else:
+                        cls.mongod.add_to_broken_links(page_url.url, page_status.get_status_code())
+                        return False
+                    cls.mongod.write_url_to_db(page_url, depth, page_status.get_status_code())
+            except UnicodeEncodeError as e:
+                Logger.logger.error(str(e))
+                return False
+        return True
 
     # Converts raw response data into readable information and checks for proper html formatting
     @abstractmethod

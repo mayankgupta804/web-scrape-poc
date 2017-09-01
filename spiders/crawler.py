@@ -30,8 +30,9 @@ class Crawler(Thread):
                 counter = 0
                 url = Url(body.decode("utf-8"))
                 Logger.logger.info(self.getName() + " processing " + str(url))
-                HeadlessSpider.crawl_page(self.getName(), url, header_frame.headers['depth'], self._channel)
-                self._channel.basic_ack(method_frame.delivery_tag)
+                success = HeadlessSpider.crawl_page(self.getName(), url, header_frame.headers['depth'], self._channel)
+                if success:
+                    self._channel.basic_ack(method_frame.delivery_tag)
                 Counter.url += 1
                 Logger.logger.info(self.getName() + " finished processing " + str(url))
             else:

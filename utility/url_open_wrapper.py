@@ -14,32 +14,15 @@ class URLOpenWrapper:
         self._page_url = page_url
 
     def __enter__(self):
-        # try:
+        try:
             self.http = urllib3.PoolManager(headers=URLOpenWrapper.user_agent)
             self.http.ConnectionCls = UnverifiedHTTPSConnection
             self._response = self.http.request('GET', self._page_url)
             self._response_code = self._response.status
-        # except HTTPError as e:
-        #     Logger.logger.error('The server couldn\'t fulfill the request.')
-        #     Logger.logger.error('Error code: ' + str(e.code))
-        #     self._response_code = e.code
-        # except URLError as e:
-        #     Logger.logger.error('We failed to reach a server.')
-        #     Logger.logger.error('Reason: ' + str(e.reason))
-        #     self._response_code = 0
-        # except ValueError as e:
-        #     Logger.logger.error("Value error : " + self._page_url)
-        #     Logger.logger.error("Reason : " + str(e))
-        #     self._response_code = 0
-        # except SSLError as e:
-        #     Logger.logger.error("SSL Error : " + self._page_url)
-        #     Logger.logger.error("Reason : " + str(e))
-        #     self._response_code = 0
-        # except Exception as e:
-        #     Logger.logger.error("Unknown Error : " + str(e))
-        #     Logger.logger.error("Reason : " + str(e))
-        #     self._response_code = 0
-            return self
+        except UnicodeEncodeError as e:
+            Logger.logger.error("Unicode Encode Error : " + str(e))
+            raise e
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
