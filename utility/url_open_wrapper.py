@@ -1,6 +1,7 @@
 import nltk
 import urllib3
 from urllib3.connection import UnverifiedHTTPSConnection
+from urllib3.exceptions import MaxRetryError, LocationParseError
 
 from utility.spell_checker import *
 
@@ -19,9 +20,9 @@ class URLOpenWrapper:
             self.http.ConnectionCls = UnverifiedHTTPSConnection
             self._response = self.http.request('GET', self._page_url)
             self._response_code = self._response.status
-        except UnicodeEncodeError as e:
+        except (UnicodeEncodeError, MaxRetryError, LocationParseError) as e:
             Logger.logger.error("Unicode Encode Error : " + str(e))
-            raise e
+            self._response_code = 0
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

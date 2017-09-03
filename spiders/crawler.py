@@ -1,50 +1,44 @@
-import time
 from threading import Thread
 
-from pika.exceptions import ConnectionClosed
-
-from rabbitmq.connect import get_rabbit_mq_channel
-from spiders.headless_spider import HeadlessSpider
+from config.properties import Properties
+from rabbitmq.queue_wrapper import QueueWrapper
 from utility.counter import Counter
+from utility.driver_wrapper import WebDriverWrapper
 from utility.logger import Logger
-from utility.url import Url
 
 
 class Crawler(Thread):
-    def __init__(self):
+    def __init__(self, mongod):
         super().__init__()
-        self._channel = self.create_connection()
+        self.mongod = mongod
+        self.crawler_queue = QueueWrapper("crawler_q")
+        self.status_queue = QueueWrapper("status_q")
+        self.image_queue = QueueWrapper("image_q")
         self.daemon = True
 
-    @staticmethod
-    def create_connection():
-        channel = get_rabbit_mq_channel()
-        channel.basic_qos(prefetch_count=1)
-        return channel
-
     def run(self):
-        counter = 0
-        while counter < 3:
-            method_frame, header_frame, body = self.get_task()
-            if method_frame:
-                counter = 0
-                url = Url(body.decode("utf-8"))
-                Logger.logger.info(self.getName() + " processing " + str(url))
-                success = HeadlessSpider.crawl_page(self.getName(), url, header_frame.headers['depth'], self._channel)
-                if success:
-                    self._channel.basic_ack(method_frame.delivery_tag)
-                Counter.url += 1
-                Logger.logger.info(self.getName() + " finished processing " + str(url))
-            else:
-                time.sleep(10)
-                counter += 1
-        Logger.logger.info("exiting thread : " + self.getName())
+        self.crawler_queue.start_consuming(self.callback)
 
-    def get_task(self):
+    def callback(self, ct, ch, method, properties, body):
+        url = body.decode("utf-8")
+        Logger.logger.info(self.getName() + " processing " + url)
+        self.crawl(url, properties.headers)
+        Counter.url += 1
+        Logger.logger.info(self.getName() + " finished processing " + url)
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+            # ch.basic_cancel(ct)
+
+    def crawl(self, url, header):
         try:
-            return self._channel.basic_get('links_queue')
-        except ConnectionClosed as e:
+            with WebDriverWrapper(url, Properties.device, self.mongod) as driver:
+                links = driver.get_all_links()
+                img_links = driver.get_image_links()
+                driver.is_blank_page()
+                driver.add_words_to_queue()
+        except Exception as e:
             Logger.logger.error(str(e))
-            self._channel = get_rabbit_mq_channel()
-            self._channel.basic_qos(prefetch_count=1)
-            return self._channel.basic_get('links_queue')
+            return
+        self.mongod.update_url_to_crawled(url)
+        self.status_queue.push_all(links, {"depth": header["depth"] + 1,
+                                           "parent": url})
+        self.image_queue.push_all(img_links, {"parent": url})

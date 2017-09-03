@@ -9,9 +9,10 @@ class MongoReader:
         self.broken_links = self.documents[Constants.BROKEN_LINKS_DOCUMENT]
         self.spellings = self.documents[Constants.SPELLINGS_DOCUMENT]
         self.blank_page = self.documents[Constants.BLANK_PAGE_DOCUMENT]
+        self.errors = self.documents[Constants.ERROR_DOCUMENT]
 
     def is_url_crawled(self, url):
-        if self.urls.find_one({"clean_url": url}) is None:
+        if self.urls.find_one({"url": url}) is None:
             return False
         else:
             return True

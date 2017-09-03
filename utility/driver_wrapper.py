@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from config.properties import Properties
 from data.devices import device_mappings
 from utility.spell_checker import *
+from utility.url import Url
 
 
 class WebDriverWrapper:
@@ -50,8 +51,12 @@ class WebDriverWrapper:
         soup = BeautifulSoup(self.page_source, "html.parser")
         links = []
         for link in soup.findAll('a'):
-            links.append(urljoin(Properties.home_page, link.get('href')))
-        return filter(None, links)
+            url = Url(urljoin(Properties.home_page, link.get('href'))).get_filtered_url()
+            if url:
+                links.append(url)
+            else:
+                self.mongod.add_to_error({"url": link.get('href')})
+        return set(filter(None, links))
 
     def get_image_links(self):
         soup = BeautifulSoup(self.page_source, "html.parser")
@@ -60,4 +65,4 @@ class WebDriverWrapper:
             link = img.get('src')
             if link and not link.startswith("data:image/svg"):
                 links.append(urljoin(Properties.home_page, img.get('src')))
-        return links
+        return set(links)

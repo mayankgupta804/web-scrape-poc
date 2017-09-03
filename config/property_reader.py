@@ -16,10 +16,6 @@ class PropertyReader:
         return self._p.getint("PROPERTIES", "depth", fallback=4)
 
     @property
-    def folder(self):
-        return self._p.get("PROPERTIES", "folder", fallback="test")
-
-    @property
     def home_page(self):
         try:
             return self._p.get("PROPERTIES", "homepage")
@@ -38,10 +34,6 @@ class PropertyReader:
     @property
     def image_check(self):
         return self._p.getboolean("PROPERTIES", "image_check", fallback=False)
-
-    @property
-    def mode(self):
-        return self._p.get("PROPERTIES", "mode", fallback="normal")
 
     @property
     def device(self):

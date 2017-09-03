@@ -1,4 +1,5 @@
 responses = {
+    0: ('', ''),
     100: ('Continue', 'Request received, please continue'),
     101: ('Switching Protocols',
           'Switching to new protocol; obey Upgrade header'),
@@ -38,7 +39,7 @@ responses = {
           'Specified method is invalid for this server.'),
     406: ('Not Acceptable', 'URI not available in preferred format.'),
     407: ('Proxy Authentication Required', 'You must authenticate with '
-          'this proxy before proceeding.'),
+                                           'this proxy before proceeding.'),
     408: ('Request Timeout', 'Request timed out; try again later.'),
     409: ('Conflict', 'Request conflict.'),
     410: ('Gone',
@@ -62,4 +63,4 @@ responses = {
     504: ('Gateway Timeout',
           'The gateway server did not receive a timely response'),
     505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
-    }
+}

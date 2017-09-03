@@ -4,3 +4,4 @@ class Constants:
     BROKEN_LINKS_DOCUMENT = "broken_links"
     SPELLINGS_DOCUMENT = "spellings"
     BLANK_PAGE_DOCUMENT = "blank_pages"
+    ERROR_DOCUMENT = "errors"
