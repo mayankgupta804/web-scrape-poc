@@ -26,7 +26,7 @@ class Crawler(Thread):
         Counter.url += 1
         Logger.logger.info(self.getName() + " finished processing " + url)
         ch.basic_ack(delivery_tag=method.delivery_tag)
-            # ch.basic_cancel(ct)
+        # ch.basic_cancel(ct)
 
     def crawl(self, url, header):
         try:
