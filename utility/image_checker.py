@@ -17,7 +17,7 @@ class ImageChecker(Thread):
         self.daemon = True
 
     def run(self):
-        self.queue.start_consuming(self.callback())
+        self.queue.start_consuming(self.callback)
 
     def callback(self, ct, ch, method, properties, body):
         url = body.decode("utf-8")
