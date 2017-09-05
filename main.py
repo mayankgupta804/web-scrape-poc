@@ -4,7 +4,9 @@ from rabbitmq.queue_wrapper import QueueWrapper
 from report.excel_report_generator import ExcelReport
 from spiders.crawler import Crawler
 from spiders.status_checker import StatusCheck
+from utility.image_checker import ImageChecker
 from utility.logger import Logger
+from utility.spell_checker import CheckWords
 
 Logger.logger.info("starting...")
 threads = []
@@ -13,6 +15,8 @@ mongod = MongoDB()
 QueueWrapper("status_q").push(Properties.home_page, {'depth': 0,
                                                      'parent': "root"
                                                      })
+CheckWords(mongod).start()
+ImageChecker(mongod).start()
 
 for _ in range(Properties.threads):
     thrd1, thrd2 = Crawler(mongod), StatusCheck(mongod)
